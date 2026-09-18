@@ -12,37 +12,42 @@ export const siteConfig = {
     "car valuation Kenya",
     "fleet management Kenya",
   ],
-
-  // Marketed lines under the Mashinika brand umbrella.
+  url: "https://mashinika.co.ke",
   brandLines: [
     {
-      slug: "roadside",
-      name: "Mashinika Roadside",
-      shortBlurb: "Roadside assistance - battery, tyre, fuel and breakdown help.",
-      href: "/services/roadside",
+      slug: "rescue",
+      name: "Mashinika Rescue",
+      shortBlurb: "Emergency roadside assistance - battery, tyre, fuel, towing and breakdown.",
+      href: "/services/rescue",
     },
     {
       slug: "care",
       name: "Mashinika Care",
-      shortBlurb: "Servicing & maintenance on a schedule that matches how you drive.",
+      shortBlurb: "Servicing, repairs and maintenance on a schedule that matches you.",
       href: "/services/care",
     },
     {
       slug: "inspect",
       name: "Mashinika Inspect",
-      shortBlurb: "Vehicle inspection and pre-purchase checks with reports you can trust.",
+      shortBlurb: "Vehicle inspections and pre-purchase checks with reports you trust.",
       href: "/services/inspect",
     },
     {
       slug: "buy",
       name: "Mashinika Buy",
-      shortBlurb: "Valuation and buying advisory so you buy right, at the right price.",
+      shortBlurb: "Buying advisory, valuation and guidance so you buy right, right price.",
       href: "/services/buy",
+    },
+    {
+      slug: "trade",
+      name: "Mashinika Trade",
+      shortBlurb: "Valuation, trade-in and vehicle swapping for when it's time to move on.",
+      href: "/services/trade",
     },
     {
       slug: "fleet",
       name: "Mashinika Fleet",
-      shortBlurb: "Fleet management and maintenance schedules for operators.",
+      shortBlurb: "Fleet management, maintenance schedules and driver records for operators.",
       href: "/services/fleet",
     },
     {
@@ -58,6 +63,10 @@ export const siteConfig = {
       href: "/services/assist",
     },
   ],
-} as const
+  cta: {
+    getHelpLabel: "GET HELP NOW",
+    getHelpHref: "/customer/emergency",
+  },
+}
 
 export type SiteConfig = typeof siteConfig
