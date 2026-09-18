@@ -1,7 +1,9 @@
-import type { Metadata } from "next"
-import type { ReactNode } from "react"
+import type { Metadata, Viewport } from "next"
+import "@/app/globals.css"
+
 import { Geist, Geist_Mono } from "next/font/google"
-import "./globals.css"
+
+import { siteConfig } from "@/config/site"
 import { Providers } from "@/app/providers"
 
 const geistSans = Geist({
@@ -15,19 +17,42 @@ const geistMono = Geist_Mono({
 })
 
 export const metadata: Metadata = {
-  title: "Njia Auto — Kenya's roadside assistance & vehicle care platform",
-  description:
-    "Roadside assistance, mobile mechanics, diagnostics, towing, inspections and fleet services across Kenya. Press, don't type — help is minutes away.",
-  applicationName: "Njia Auto",
+  metadataBase: new URL(siteConfig.url),
+  title: {
+    default: `${siteConfig.name} - ${siteConfig.tagline}`,
+    template: `%s | ${siteConfig.name}`,
+  },
+  description: siteConfig.description,
+  applicationName: siteConfig.name,
+  keywords: siteConfig.keywords,
+  icons: {
+    icon: [
+      { url: "/brand/favicon.svg", sizes: "64x64", type: "image/svg+xml" },
+      { url: "/brand/logo.svg", sizes: "320x80", type: "image/svg+xml" },
+    ],
+    apple: "/brand/logo.svg",
+  },
+  openGraph: {
+    type: "website",
+    locale: "en_KE",
+    siteName: siteConfig.name,
+    title: `${siteConfig.name} - ${siteConfig.tagline}`,
+    description: siteConfig.description,
+  },
 }
 
-export default function RootLayout({ children }: { children: ReactNode }) {
+export const viewport: Viewport = {
+  themeColor: "#0B1220",
+}
+
+export default function RootLayout({
+  children,
+}: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html
-      lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
-    >
-      <body className="bg-background text-foreground flex min-h-full flex-col">
+    <html lang="en">
+      <body
+        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+      >
         <Providers>{children}</Providers>
       </body>
     </html>
