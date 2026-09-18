@@ -1,15 +1,21 @@
-import type { GenericSchema } from "@supabase/supabase-js"
-
 /**
- * Placeholder for the auto-generated Supabase database type.
+ * Placeholder Supabase Database type (satisfies @supabase/ssr's
+ * `GenericSchema` constraint so the server/browser/middleware clients are
+ * fully typed before a live Supabase project exists).
  *
- * Once a real project exists, replace this value with:
+ * Replace with generated types once a project is live:
  *
- *   SUPABASE_URL=
- *   npx supabase gen types typescript --project-id <ref> > src/lib/supabase/database.ts
+ *   npx supabase gen types typescript --project-id <ref>
+ *        --schema public > src/lib/supabase/database.ts
  *
- * Until then `GenericSchema` keeps the SSR/ssr helpers typed without
- * pretending we know the live schema (that schema is authored in Drizzle:
- * `src/lib/db/schema.ts` + `src/lib/db/tables/`).
+ * The real schema is authored in Drizzle (src/lib/db/) ? this file only
+ * describes what Supabase's PostgREST layer exposes, and mostly the auth
+ * schema whose types our generated client won't cover on its own.
  */
-export type Database = GenericSchema
+export type Database = {
+  public: {
+    Row: Record<string, unknown>
+    Insert: Record<string, unknown>
+    Update: Record<string, unknown>
+  }
+}
