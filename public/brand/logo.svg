@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="320" height="80" viewBox="0 0 320 80" role="img" aria-label="MashiniKa">
+  <!-- MashiniKa wordmark mark. Replace this placeholder with release artwork. -->
+  <defs>
+    <linearGradient id="mg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#F59E0B" />
+      <stop offset="1" stop-color="#DC2626" />
+    </linearGradient>
+  </defs>
+  <!-- Monogram: stylized M formed from a road/pulse line -->
+  <g fill="none" stroke-width="8" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M12 62 L12 24 L36 46 L58 24 L58 62" stroke="url(#mg)" />
+    <path d="M60 24 L60 62" stroke="#F59E0B" />
+    <path d="M96 66 L46 14" stroke="#DC2626" stroke-width="3" opacity="0.9" />
+  </g>
+  <!-- Wordmark -->
+  <text x="112" y="46" font-family="Arial, Helvetica, sans-serif" font-size="34"
+        font-weight="700" fill="#111827" letter-spacing="-1">MashiniKa</text>
+  <text x="113" y="66" font-family="Arial, Helvetica, sans-serif" font-size="12"
+        fill="#6B7280" letter-spacing="2">YOUR CAR. OUR EXPERTISE.</text>
+</svg>
