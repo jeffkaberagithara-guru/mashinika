@@ -13,29 +13,12 @@ import {
   UserCheck,
   Wrench,
 } from "lucide-react"
+import type { ServiceRequestStatus } from "@/types/service-request"
 
-/**
- * Roadside service request states.
- *
- * These are the authoritative lifecycle states for the emergency workflow.
- * Every state transition should be recorded as a `ServiceRequestEvent`.
- */
-export const SERVICE_REQUEST_STATUSES = [
-  "CREATED",
-  "LOCATION_CONFIRMED",
-  "SEARCHING_FOR_TECHNICIAN",
-  "TECHNICIAN_ASSIGNED",
-  "TECHNICIAN_EN_ROUTE",
-  "TECHNICIAN_ARRIVED",
-  "DIAGNOSING",
-  "REPAIRING",
-  "TOW_REQUIRED",
-  "TOWING",
-  "COMPLETED",
-  "CANCELLED",
-] as const
-
-export type ServiceRequestStatus = (typeof SERVICE_REQUEST_STATUSES)[number]
+export type { ServiceRequestStatus }
+export {
+  SERVICE_REQUEST_STATUSES,
+} from "@/types/service-request"
 
 /** Tones map onto the design-system status badge tones. */
 export type StatusTone =
