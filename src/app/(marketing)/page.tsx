@@ -17,7 +17,6 @@ import { Button } from "@/components/ui/button"
 import { StatusBadge } from "@/components/ui/status-badge"
 import { Timeline } from "@/components/ui/timeline"
 import { ServiceCard } from "@/components/marketing/service-card"
-import { siteConfig } from "@/config/site"
 
 const services = [
   {
@@ -94,50 +93,6 @@ const howItWorks = [
 export default function Home() {
   return (
     <div className="flex-1">
-      <header className="border-border bg-background/80 border-b backdrop-blur-sm">
-        <div className="mx-auto flex h-16 w-full max-w-7xl items-center justify-between gap-4 px-4 sm:px-6 lg:px-8">
-          <Link href="/" className="flex items-center gap-2.5">
-            <span className="bg-primary text-primary-foreground flex size-8 items-center justify-center rounded-lg">
-              <Car className="size-4.5" aria-hidden="true" />
-            </span>
-            <span className="text-foreground text-[15px] font-semibold tracking-tight">
-              {siteConfig.name}
-            </span>
-          </Link>
-
-          <nav
-            className="hidden items-center gap-1 md:flex"
-            aria-label="Primary"
-          >
-            {["Services", "Diagnostics", "Towing", "Inspections", "Fleet"].map(
-              (item) => (
-                <Link
-                  key={item}
-                  href="/services"
-                  className="text-muted-foreground hover:bg-muted hover:text-foreground rounded-lg px-3 py-2 text-sm font-medium transition-colors"
-                >
-                  {item}
-                </Link>
-              ),
-            )}
-          </nav>
-
-          <div className="flex items-center gap-2">
-            <Button
-              variant="ghost"
-              size="sm"
-              className="hidden sm:inline-flex"
-              render={<Link href="/technician" />}
-            >
-              Become a technician
-            </Button>
-            <Button size="sm" render={<Link href="/request" />}>
-              Get help now
-            </Button>
-          </div>
-        </div>
-      </header>
-
       <main>
         <section className="mx-auto grid w-full max-w-7xl grid-cols-1 gap-12 px-4 pt-14 pb-20 sm:px-6 lg:grid-cols-12 lg:items-center lg:gap-8 lg:px-8 lg:pt-20 lg:pb-28">
           <div className="lg:col-span-7">
@@ -259,24 +214,6 @@ export default function Home() {
           </div>
         </section>
       </main>
-
-      <footer className="border-border border-t">
-        <div className="text-muted-foreground mx-auto flex w-full max-w-7xl flex-col items-center justify-between gap-4 px-4 py-10 text-sm sm:flex-row sm:px-6 lg:px-8">
-          <div className="flex items-center gap-2.5">
-            <span className="bg-subtle text-foreground ring-border flex size-7 items-center justify-center rounded-lg ring-1 ring-inset">
-              <Car className="size-4" aria-hidden="true" />
-            </span>
-            <span className="text-foreground font-medium">
-              {siteConfig.name}
-            </span>
-            <span aria-hidden="true">·</span>
-            <span>{siteConfig.tagline}</span>
-          </div>
-          <p>
-            © {new Date().getFullYear()} {siteConfig.name}. All rights reserved.
-          </p>
-        </div>
-      </footer>
     </div>
   )
 }
