@@ -43,6 +43,14 @@ export function SiteHeader() {
             variant="ghost"
             size="sm"
             className="hidden sm:inline-flex"
+            render={<Link href="/customer" />}
+          >
+            My rescues
+          </Button>
+          <Button
+            variant="ghost"
+            size="sm"
+            className="hidden md:inline-flex"
             render={<Link href="/customer/emergency" />}
           >
             Emergency

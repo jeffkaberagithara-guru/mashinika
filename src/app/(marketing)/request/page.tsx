@@ -1,5 +1,5 @@
 import type { Metadata } from "next"
-import { RequestForm } from "@/components/request/request-form"
+import { RescueWizard } from "@/features/request/components/rescue-wizard"
 import { StatusBadge } from "@/components/ui/status-badge"
 
 export const metadata: Metadata = {
@@ -17,12 +17,12 @@ export default function RequestPage() {
             Available now across major Kenyan towns
           </StatusBadge>
           <h1 className="text-foreground max-w-md text-4xl font-semibold tracking-tight text-balance sm:text-5xl">
-            What do you need, and where?
+            Get help now — in three quick steps
           </h1>
           <p className="text-muted-foreground max-w-md text-lg leading-relaxed">
-            Tell us the problem and your location. A vetted technician closest
-            to you will respond with an ETA and a price you approve before any
-            work starts.
+            Tell us the problem, confirm the vehicle and location, and a vetted
+            technician closest to you responds with an ETA and a price you
+            approve before any work starts.
           </p>
           <ul className="text-muted-foreground flex flex-col gap-2 text-sm">
             <li className="flex items-center gap-2">
@@ -40,8 +40,8 @@ export default function RequestPage() {
           </ul>
         </div>
 
-        <div className="lg:col-span-6 lg:col-start-7">
-          <RequestForm mode="standard" />
+        <div className="lg:col-span-7">
+          <RescueWizard />
         </div>
       </section>
     </div>
