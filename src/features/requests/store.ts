@@ -21,6 +21,7 @@ export type RescueRequest = {
   vehicle: RescueVehicle
   locationLabel: string
   issue: string
+  technicianId: string | null
   createdAt: string
   updatedAt: string
 }
@@ -38,6 +39,7 @@ export type RescueRequestInput = {
 type RequestsStore = {
   requests: Record<string, RescueRequest>
   createRequest: (input: RescueRequestInput) => RescueRequest
+  acceptRequest: (id: string, technicianId: string) => void
   updateStatus: (id: string, status: ServiceRequestStatus) => void
   removeRequest: (id: string) => void
 }
@@ -52,14 +54,33 @@ export const useRequestsStore = create<RequestsStore>()(
         const request: RescueRequest = {
           id,
           ...input,
+          serviceType: input.serviceType,
           priority: input.priority ?? "NORMAL",
           status: "CREATED",
+          technicianId: null,
           createdAt: now,
           updatedAt: now,
         }
         set((state) => ({ requests: { ...state.requests, [id]: request } }))
         return request
       },
+      acceptRequest: (id, technicianId) =>
+        set((state) => {
+          const request = state.requests[id]
+          if (!request) return state
+          if (request.status !== "SEARCHING_FOR_TECHNICIAN") return state
+          return {
+            requests: {
+              ...state.requests,
+              [id]: {
+                ...request,
+                status: "TECHNICIAN_ASSIGNED",
+                technicianId,
+                updatedAt: new Date().toISOString(),
+              },
+            },
+          }
+        }),
       updateStatus: (id, status) =>
         set((state) => {
           const request = state.requests[id]
