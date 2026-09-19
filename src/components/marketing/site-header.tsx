@@ -8,6 +8,7 @@ const navItems = [
   { label: "Academy", href: "/academy" },
   { label: "Fleet", href: "/services/fleet" },
   { label: "Technicians", href: "/technician" },
+  { label: "Dispatch console", href: "/technician/console" },
 ]
 
 export function SiteHeader() {
