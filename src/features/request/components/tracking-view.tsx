@@ -2,7 +2,16 @@
 
 import * as React from "react"
 import Link from "next/link"
-import { AlertTriangle, ArrowLeft, CheckCircle2, Clock, Radio } from "lucide-react"
+import {
+  AlertTriangle,
+  ArrowLeft,
+  CheckCircle2,
+  Clock,
+  Radio,
+  Star,
+  UserRound,
+  Wrench,
+} from "lucide-react"
 import { useRequestsStore } from "@/features/requests/store"
 import {
   SIMULATION_STEP_MS,
@@ -18,6 +27,7 @@ import { StatusBadge } from "@/components/ui/status-badge"
 import { Timeline, type TimelineItem } from "@/components/ui/timeline"
 import { Button } from "@/components/ui/button"
 import { getServiceBySlug } from "@/config/services"
+import { getTechnician } from "@/features/technicians/data"
 
 function formatElapsed(startIso: string): string {
   const seconds = Math.max(
@@ -83,6 +93,7 @@ export function TrackingView({ requestId }: { requestId: string }) {
     SERVICE_REQUEST_STATUS_CONFIG.CREATED
   const eta = etaMinutesFor(request.serviceType)
   const isUrgent = request.priority === "URGENT"
+  const assignedTechnician = getTechnician(request.technicianId)
 
   const timelineItems: TimelineItem[] = sequence.map((status, index) => {
     const statusConfig = SERVICE_REQUEST_STATUS_CONFIG[status]
@@ -183,6 +194,33 @@ export function TrackingView({ requestId }: { requestId: string }) {
           <div className="border-border bg-subtle mt-3 rounded-lg border px-4 py-3">
             <p className="text-muted-foreground text-xs">Details</p>
             <p className="text-foreground mt-0.5 text-sm">{request.issue}</p>
+          </div>
+        ) : null}
+
+        {assignedTechnician ? (
+          <div className="border-border bg-subtle mt-3 rounded-lg border px-4 py-3">
+            <div className="flex items-center gap-3">
+              <span className="bg-primary/10 text-primary flex size-10 shrink-0 items-center justify-center rounded-full">
+                <UserRound className="size-5" aria-hidden="true" />
+              </span>
+              <div className="flex min-w-0 flex-1 flex-col">
+                <p className="text-muted-foreground text-xs">
+                  {request.status === "TECHNICIAN_ASSIGNED"
+                    ? "Your technician"
+                    : "On the way"}
+                </p>
+                <p className="text-foreground truncate text-sm font-semibold">
+                  {assignedTechnician.name}
+                </p>
+                <p className="text-muted-foreground truncate text-xs">
+                  {assignedTechnician.specialty}
+                </p>
+              </div>
+              <span className="text-foreground inline-flex items-center gap-1 text-xs font-medium">
+                <Star className="size-3.5 fill-current" aria-hidden="true" />
+                {assignedTechnician.rating.toFixed(1)}
+              </span>
+            </div>
           </div>
         ) : null}
       </div>
