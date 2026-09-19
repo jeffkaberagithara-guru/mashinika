@@ -41,6 +41,9 @@ export function nextStatus(
   current: ServiceRequestStatus,
   serviceType: string,
 ): ServiceRequestStatus | null {
+  // Dispatch pauses here: the request stays open for a technician to accept
+  // from the console. `acceptRequest` moves it on to TECHNICIAN_ASSIGNED.
+  if (current === "SEARCHING_FOR_TECHNICIAN") return null
   const sequence = statusSequence(serviceType)
   const index = sequence.indexOf(current)
   if (index === -1) return null
