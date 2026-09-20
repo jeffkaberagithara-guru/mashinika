@@ -1,11 +1,11 @@
-import type { Metadata } from "next"
-import { RescueWizard } from "@/features/request/components/rescue-wizard"
-import { StatusBadge } from "@/components/ui/status-badge"
+import type { Metadata } from 'next'
+import { RescueWizard } from '@/features/request/components/rescue-wizard'
+import { StatusBadge } from '@/components/ui/status-badge'
 
 export const metadata: Metadata = {
-  title: "Request help",
+  title: 'Request help',
   description:
-    "Press once and the nearest vetted technician comes to you. Battery, tyre, fuel, towing, diagnostics and more.",
+    'Press once and the nearest vetted technician comes to you. Battery, tyre, fuel, towing, diagnostics and more.',
 }
 
 export default function RequestPage() {

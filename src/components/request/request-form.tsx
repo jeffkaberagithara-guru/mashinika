@@ -1,23 +1,23 @@
-"use client"
+'use client'
 
-import * as React from "react"
-import { CheckCircle2, Loader2, MapPin, PhoneCall } from "lucide-react"
-import { toast } from "sonner"
-import { cn } from "cn"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Textarea } from "@/components/ui/textarea"
+import * as React from 'react'
+import { CheckCircle2, Loader2, MapPin, PhoneCall } from 'lucide-react'
+import { toast } from 'sonner'
+import { cn } from 'cn'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import { Textarea } from '@/components/ui/textarea'
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select"
-import { services } from "@/config/services"
+} from '@/components/ui/select'
+import { services } from '@/config/services'
 
-export type RequestFormMode = "standard" | "emergency"
+export type RequestFormMode = 'standard' | 'emergency'
 
 type RequestFormProps = {
   mode?: RequestFormMode
@@ -26,36 +26,37 @@ type RequestFormProps = {
 }
 
 const selectableServices = [
-  { slug: "rescue", name: "Roadside rescue" },
-  { slug: "roadside", name: "Roadside assistance" },
-  { slug: "diagnostics", name: "Mobile diagnostics" },
-  { slug: "towing", name: "Towing & recovery" },
-  { slug: "inspections", name: "Vehicle inspection" },
-  { slug: "care", name: "Servicing & repairs" },
-  { slug: "fleet", name: "Fleet management" },
-  { slug: "advisory", name: "Purchase advisory" },
+  { slug: 'rescue', name: 'Roadside rescue' },
+  { slug: 'roadside', name: 'Roadside assistance' },
+  { slug: 'diagnostics', name: 'Mobile diagnostics' },
+  { slug: 'towing', name: 'Towing & recovery' },
+  { slug: 'inspections', name: 'Vehicle inspection' },
+  { slug: 'care', name: 'Servicing & repairs' },
+  { slug: 'fleet', name: 'Fleet management' },
+  { slug: 'advisory', name: 'Purchase advisory' },
 ]
 
-const required = (value: string) => (value.trim() ? "" : "This field is required")
+const required = (value: string) =>
+  value.trim() ? '' : 'This field is required'
 
 export function RequestForm({
-  mode = "standard",
-  defaultServiceType = "rescue",
+  mode = 'standard',
+  defaultServiceType = 'rescue',
   locationLabel,
 }: RequestFormProps) {
-  const [name, setName] = React.useState("")
-  const [phone, setPhone] = React.useState("")
+  const [name, setName] = React.useState('')
+  const [phone, setPhone] = React.useState('')
   const [serviceType, setServiceType] = React.useState(defaultServiceType)
-  const [registration, setRegistration] = React.useState("")
-  const [makeModel, setMakeModel] = React.useState("")
-  const [location, setLocation] = React.useState(locationLabel ?? "")
-  const [issue, setIssue] = React.useState("")
+  const [registration, setRegistration] = React.useState('')
+  const [makeModel, setMakeModel] = React.useState('')
+  const [location, setLocation] = React.useState(locationLabel ?? '')
+  const [issue, setIssue] = React.useState('')
   const [errors, setErrors] = React.useState<Record<string, string>>({})
   const [status, setStatus] = React.useState<
-    "idle" | "submitting" | "submitted"
-  >("idle")
+    'idle' | 'submitting' | 'submitted'
+  >('idle')
 
-  const emergency = mode === "emergency"
+  const emergency = mode === 'emergency'
 
   function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault()
@@ -68,22 +69,22 @@ export function RequestForm({
 
     setErrors(nextErrors)
     if (Object.values(nextErrors).some(Boolean)) {
-      toast.error("Please complete the required fields")
+      toast.error('Please complete the required fields')
       return
     }
 
-    setStatus("submitting")
+    setStatus('submitting')
     window.setTimeout(() => {
-      setStatus("submitted")
+      setStatus('submitted')
       toast.success(
         emergency
-          ? "Help is on the way — your detail was sent to dispatch."
+          ? 'Help is on the way — your detail was sent to dispatch.'
           : "Request submitted — we'll confirm your booking shortly.",
       )
     }, 900)
   }
 
-  if (status === "submitted") {
+  if (status === 'submitted') {
     const service = services.find((candidate) => candidate.slug === serviceType)
     return (
       <div className="border-border bg-card flex flex-col gap-5 rounded-xl border p-6 text-center shadow-sm">
@@ -92,12 +93,12 @@ export function RequestForm({
         </span>
         <div className="flex flex-col gap-1">
           <h2 className="text-foreground text-lg font-semibold">
-            {emergency ? "Help is on the way" : "Request received"}
+            {emergency ? 'Help is on the way' : 'Request received'}
           </h2>
           <p className="text-muted-foreground mx-auto max-w-sm text-sm leading-relaxed">
             {emergency
-              ? `Dispatch is matching the nearest ${service?.name ?? "technician"} to ${location || "your location"}. A technician will call ${phone || "you"} shortly.`
-              : `A ${service?.name ?? "service"} request was logged for ${location || "your location"}. You'll be contacted on ${phone || "your number"} with confirmation.`}
+              ? `Dispatch is matching the nearest ${service?.name ?? 'technician'} to ${location || 'your location'}. A technician will call ${phone || 'you'} shortly.`
+              : `A ${service?.name ?? 'service'} request was logged for ${location || 'your location'}. You'll be contacted on ${phone || 'your number'} with confirmation.`}
           </p>
         </div>
         <div className="text-muted-foreground border-border bg-subtle mx-auto flex w-full max-w-sm items-center justify-center gap-2 rounded-lg border px-4 py-3 text-sm">
@@ -107,7 +108,7 @@ export function RequestForm({
         <Button
           variant="outline"
           onClick={() => {
-            setStatus("idle")
+            setStatus('idle')
           }}
         >
           Make another request
@@ -120,15 +121,15 @@ export function RequestForm({
     <form
       onSubmit={handleSubmit}
       className={cn(
-        "border-border bg-card flex flex-col gap-4 rounded-xl border p-5 shadow-sm sm:p-6",
-        emergency && "ring-destructive/20 focus-within:ring-2",
+        'border-border bg-card flex flex-col gap-4 rounded-xl border p-5 shadow-sm sm:p-6',
+        emergency && 'ring-destructive/20 focus-within:ring-2',
       )}
       noValidate
     >
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
         <div className="flex flex-col gap-1.5">
           <Label htmlFor="request-name">
-            {emergency ? "Your name" : "Full name"}
+            {emergency ? 'Your name' : 'Full name'}
           </Label>
           <Input
             id="request-name"
@@ -137,7 +138,7 @@ export function RequestForm({
             placeholder="e.g. Amani Wanjiru"
             autoComplete="name"
             aria-invalid={Boolean(errors.name)}
-            aria-describedby={errors.name ? "request-name-error" : undefined}
+            aria-describedby={errors.name ? 'request-name-error' : undefined}
           />
           {errors.name ? (
             <p id="request-name-error" className="text-destructive text-xs">
@@ -156,7 +157,7 @@ export function RequestForm({
             placeholder="e.g. 0712 345 678"
             autoComplete="tel"
             aria-invalid={Boolean(errors.phone)}
-            aria-describedby={errors.phone ? "request-phone-error" : undefined}
+            aria-describedby={errors.phone ? 'request-phone-error' : undefined}
           />
           {errors.phone ? (
             <p id="request-phone-error" className="text-destructive text-xs">
@@ -211,7 +212,7 @@ export function RequestForm({
 
       <div className="flex flex-col gap-1.5">
         <Label htmlFor="request-location">
-          {emergency ? "Your current location" : "Where is the vehicle?"}
+          {emergency ? 'Your current location' : 'Where is the vehicle?'}
         </Label>
         <div className="relative">
           <MapPin
@@ -223,10 +224,14 @@ export function RequestForm({
             className="pl-8"
             value={location}
             onChange={(event) => setLocation(event.target.value)}
-            placeholder={emergency ? "e.g. Thika Road Mall, exit gate" : "e.g. Westlands, Nairobi"}
+            placeholder={
+              emergency
+                ? 'e.g. Thika Road Mall, exit gate'
+                : 'e.g. Westlands, Nairobi'
+            }
             aria-invalid={Boolean(errors.location)}
             aria-describedby={
-              errors.location ? "request-location-error" : undefined
+              errors.location ? 'request-location-error' : undefined
             }
           />
         </div>
@@ -246,27 +251,32 @@ export function RequestForm({
           placeholder={
             emergency
               ? "e.g. Battery dead after shopping, car won't start."
-              : "e.g. Engine warning light, need a service this week."
+              : 'e.g. Engine warning light, need a service this week.'
           }
         />
       </div>
 
-      <Button type="submit" size="lg" className="mt-1 w-full" disabled={status === "submitting"}>
-        {status === "submitting" ? (
+      <Button
+        type="submit"
+        size="lg"
+        className="mt-1 w-full"
+        disabled={status === 'submitting'}
+      >
+        {status === 'submitting' ? (
           <>
             <Loader2 className="size-4 animate-spin" aria-hidden="true" />
             Sending…
           </>
         ) : emergency ? (
-          "Send emergency request"
+          'Send emergency request'
         ) : (
-          "Submit request"
+          'Submit request'
         )}
       </Button>
 
       <p className="text-muted-foreground text-center text-xs">
         {emergency
-          ? "In a life-threatening situation, call 112 / 999 before requesting help online."
+          ? 'In a life-threatening situation, call 112 / 999 before requesting help online.'
           : "No payment required now — you'll approve price before any work starts."}
       </p>
     </form>

@@ -1,8 +1,8 @@
-import { cookies } from "next/headers"
+import { cookies } from 'next/headers'
 
-import { createServerClient } from "@supabase/ssr"
+import { createServerClient } from '@supabase/ssr'
 
-import type { Database } from "@/lib/supabase/database"
+import type { Database } from '@/lib/supabase/database'
 
 /**
  * Server-side Supabase client bound to the request's cookie jar.

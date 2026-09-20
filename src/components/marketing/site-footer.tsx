@@ -1,25 +1,25 @@
-import Link from "next/link"
-import { Car } from "lucide-react"
-import { siteConfig } from "@/config/site"
+import Link from 'next/link'
+import { Car } from 'lucide-react'
+import { siteConfig } from '@/config/site'
 
 const footerLinks = [
   {
-    heading: "Services",
+    heading: 'Services',
     links: [
-      { label: "Roadside rescue", href: "/services/rescue" },
-      { label: "Diagnostics", href: "/services/diagnostics" },
-      { label: "Towing", href: "/services/towing" },
-      { label: "Inspections", href: "/services/inspections" },
-      { label: "Fleet", href: "/services/fleet" },
+      { label: 'Roadside rescue', href: '/services/rescue' },
+      { label: 'Diagnostics', href: '/services/diagnostics' },
+      { label: 'Towing', href: '/services/towing' },
+      { label: 'Inspections', href: '/services/inspections' },
+      { label: 'Fleet', href: '/services/fleet' },
     ],
   },
   {
-    heading: "Mashinika",
+    heading: 'Mashinika',
     links: [
-      { label: "All services", href: "/services" },
-      { label: "Academy", href: "/academy" },
-      { label: "Become a technician", href: "/technician" },
-      { label: "Get help now", href: "/request" },
+      { label: 'All services', href: '/services' },
+      { label: 'Academy', href: '/academy' },
+      { label: 'Become a technician', href: '/technician' },
+      { label: 'Get help now', href: '/request' },
     ],
   },
 ]
@@ -27,7 +27,7 @@ const footerLinks = [
 export function SiteFooter() {
   return (
     <footer className="border-border border-t">
-      <div className="mx-auto grid w-full max-w-7xl grid-cols-1 gap-10 px-4 py-12 sm:grid-cols-2 lg:grid-cols-4 sm:px-6 lg:px-8">
+      <div className="mx-auto grid w-full max-w-7xl grid-cols-1 gap-10 px-4 py-12 sm:grid-cols-2 sm:px-6 lg:grid-cols-4 lg:px-8">
         <div className="flex flex-col gap-3">
           <div className="flex items-center gap-2.5">
             <span className="bg-subtle text-foreground ring-border flex size-7 items-center justify-center rounded-lg ring-1 ring-inset">

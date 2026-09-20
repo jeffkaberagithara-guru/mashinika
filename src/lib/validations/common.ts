@@ -1,4 +1,4 @@
-import { z } from "zod"
+import { z } from 'zod'
 
 /** UUID v4, as emitted by `crypto.randomUUID()`. */
 export const zuuid = z.string().uuid()
@@ -13,7 +13,7 @@ export const znullableString = zstring.nullable()
 export const ZPhone = z
   .string()
   .trim()
-  .regex(/^\+?[0-9]{9,15}$/, "Enter a valid phone number")
+  .regex(/^\+?[0-9]{9,15}$/, 'Enter a valid phone number')
 
 export const ZEmail = z.string().trim().email().nullable().optional()
 

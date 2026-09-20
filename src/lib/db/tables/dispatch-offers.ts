@@ -6,10 +6,10 @@ import {
   text,
   timestamp,
   uuid,
-} from "drizzle-orm/pg-core"
-import { serviceRequests } from "@/lib/db/tables/service-requests"
-import { technicians } from "@/lib/db/tables/dispatch"
-import { dispatchOfferStatus } from "@/lib/db/schema"
+} from 'drizzle-orm/pg-core'
+import { serviceRequests } from '@/lib/db/tables/service-requests'
+import { technicians } from '@/lib/db/tables/dispatch'
+import { dispatchOfferStatus } from '@/lib/db/schema'
 
 /**
  * A technician's offer to take a specific service request. This is the
@@ -18,29 +18,29 @@ import { dispatchOfferStatus } from "@/lib/db/schema"
  * and the rest expire.
  */
 export const dispatchOffers = pgTable(
-  "dispatch_offers",
+  'dispatch_offers',
   {
-    id: uuid("id").primaryKey().defaultRandom(),
-    requestId: uuid("request_id")
+    id: uuid('id').primaryKey().defaultRandom(),
+    requestId: uuid('request_id')
       .notNull()
-      .references(() => serviceRequests.id, { onDelete: "cascade" }),
-    technicianId: uuid("technician_id")
+      .references(() => serviceRequests.id, { onDelete: 'cascade' }),
+    technicianId: uuid('technician_id')
       .notNull()
-      .references(() => technicians.id, { onDelete: "cascade" }),
-    status: dispatchOfferStatus("status").notNull().default("PENDING"),
-    etaMinutes: integer("eta_minutes"),
-    price: numeric("price", { precision: 12, scale: 2 }),
-    message: text("message"),
-    expiresAt: timestamp("expires_at", { withTimezone: true }),
-    createdAt: timestamp("created_at", { withTimezone: true })
+      .references(() => technicians.id, { onDelete: 'cascade' }),
+    status: dispatchOfferStatus('status').notNull().default('PENDING'),
+    etaMinutes: integer('eta_minutes'),
+    price: numeric('price', { precision: 12, scale: 2 }),
+    message: text('message'),
+    expiresAt: timestamp('expires_at', { withTimezone: true }),
+    createdAt: timestamp('created_at', { withTimezone: true })
       .defaultNow()
       .notNull(),
-    updatedAt: timestamp("updated_at", { withTimezone: true })
+    updatedAt: timestamp('updated_at', { withTimezone: true })
       .defaultNow()
       .notNull(),
   },
   (table) => [
-    index("dispatch_offers_request_idx").on(table.requestId),
-    index("dispatch_offers_technician_idx").on(table.technicianId),
+    index('dispatch_offers_request_idx').on(table.requestId),
+    index('dispatch_offers_technician_idx').on(table.technicianId),
   ],
 )

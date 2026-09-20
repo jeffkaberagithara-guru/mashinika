@@ -1,13 +1,13 @@
-import type { Metadata } from "next"
-import { TrackingView } from "@/features/request/components/tracking-view"
+import type { Metadata } from 'next'
+import { TrackingView } from '@/features/request/components/tracking-view'
 
 type RequestTrackingPageProps = {
   params: Promise<{ id: string }>
 }
 
 export const metadata: Metadata = {
-  title: "Track your rescue",
-  description: "Live status of your Mashinika rescue request.",
+  title: 'Track your rescue',
+  description: 'Live status of your Mashinika rescue request.',
 }
 
 export default async function RequestTrackingPage({

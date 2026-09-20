@@ -1,7 +1,7 @@
-import { createServerClient } from "@supabase/ssr"
-import { NextResponse, type NextRequest } from "next/server"
+import { createServerClient } from '@supabase/ssr'
+import { NextResponse, type NextRequest } from 'next/server'
 
-import type { Database } from "@/lib/supabase/database"
+import type { Database } from '@/lib/supabase/database'
 
 /**
  * Refreshes the auth session from a route handler or middleware. Returns the

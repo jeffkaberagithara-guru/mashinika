@@ -9,23 +9,23 @@ export type DemoTechnician = {
 /** Placeholder roster until real technician profiles exist in the DB. */
 export const demoTechnicians: DemoTechnician[] = [
   {
-    id: "tech-brian",
-    name: "Brian Otieno",
-    specialty: "Roadside & diagnostics",
+    id: 'tech-brian',
+    name: 'Brian Otieno',
+    specialty: 'Roadside & diagnostics',
     rating: 4.9,
     jobs: 1324,
   },
   {
-    id: "tech-faith",
-    name: "Faith Njeri",
-    specialty: "Mechanical repairs",
+    id: 'tech-faith',
+    name: 'Faith Njeri',
+    specialty: 'Mechanical repairs',
     rating: 4.8,
     jobs: 987,
   },
   {
-    id: "tech-kevin",
-    name: "Kevin Mwangi",
-    specialty: "Towing & recovery",
+    id: 'tech-kevin',
+    name: 'Kevin Mwangi',
+    specialty: 'Towing & recovery',
     rating: 4.7,
     jobs: 741,
   },

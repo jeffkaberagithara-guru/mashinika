@@ -1,7 +1,7 @@
-"use client"
+'use client'
 
-import * as React from "react"
-import { useRouter } from "next/navigation"
+import * as React from 'react'
+import { useRouter } from 'next/navigation'
 import {
   Activity,
   Car,
@@ -14,68 +14,66 @@ import {
   Truck,
   UserRound,
   Wrench,
-} from "lucide-react"
-import { cn } from "cn"
-import { toast } from "sonner"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Textarea } from "@/components/ui/textarea"
-import { useRequestsStore } from "@/features/requests/store"
-import { getServiceBySlug } from "@/config/services"
+} from 'lucide-react'
+import { cn } from 'cn'
+import { toast } from 'sonner'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import { Textarea } from '@/components/ui/textarea'
+import { useRequestsStore } from '@/features/requests/store'
+import { getServiceBySlug } from '@/config/services'
 
 const problemOptions = [
   {
-    slug: "roadside",
+    slug: 'roadside',
     icon: LifeBuoy,
-    title: "Breakdown / emergency",
-    detail: "Battery, tyre, fuel, keys or a breakdown right now.",
+    title: 'Breakdown / emergency',
+    detail: 'Battery, tyre, fuel, keys or a breakdown right now.',
   },
   {
-    slug: "diagnostics",
+    slug: 'diagnostics',
     icon: Activity,
-    title: "Diagnose a fault",
-    detail: "Warning light, strange noise, or a pre-service check.",
+    title: 'Diagnose a fault',
+    detail: 'Warning light, strange noise, or a pre-service check.',
   },
   {
-    slug: "towing",
+    slug: 'towing',
     icon: Truck,
-    title: "Towing & recovery",
+    title: 'Towing & recovery',
     detail: "The car can't be driven and needs a flatbed.",
   },
   {
-    slug: "care",
+    slug: 'care',
     icon: Wrench,
-    title: "Servicing & repairs",
-    detail: "Routine maintenance or a repair you can schedule.",
+    title: 'Servicing & repairs',
+    detail: 'Routine maintenance or a repair you can schedule.',
   },
 ]
 
-const stepLabels = ["Problem", "Vehicle & location", "Confirm"]
+const stepLabels = ['Problem', 'Vehicle & location', 'Confirm']
 
 export function RescueWizard() {
   const router = useRouter()
-  const createRequest = useRequestsStore(
-    (state) => state.createRequest,
-  )
+  const createRequest = useRequestsStore((state) => state.createRequest)
 
   const [step, setStep] = React.useState(0)
-  const [serviceType, setServiceType] = React.useState<string>("roadside")
-  const [registration, setRegistration] = React.useState("")
-  const [make, setMake] = React.useState("")
-  const [model, setModel] = React.useState("")
-  const [locationLabel, setLocationLabel] = React.useState("")
-  const [issue, setIssue] = React.useState("")
-  const [name, setName] = React.useState("")
-  const [phone, setPhone] = React.useState("")
+  const [serviceType, setServiceType] = React.useState<string>('roadside')
+  const [registration, setRegistration] = React.useState('')
+  const [make, setMake] = React.useState('')
+  const [model, setModel] = React.useState('')
+  const [locationLabel, setLocationLabel] = React.useState('')
+  const [issue, setIssue] = React.useState('')
+  const [name, setName] = React.useState('')
+  const [phone, setPhone] = React.useState('')
   const [urgent, setUrgent] = React.useState(false)
   const [tried, setTried] = React.useState(false)
   const [submitting, setSubmitting] = React.useState(false)
 
   const stepValid = [
-    serviceType.trim() !== "",
-    locationLabel.trim() !== "",
-    name.trim() !== "" && phone.trim() !== "",
+    serviceType.trim() !== '',
+    locationLabel.trim() !== '',
+    name.trim() !== '' && phone.trim() !== '',
   ]
 
   function handleNext() {
@@ -83,10 +81,10 @@ export function RescueWizard() {
     if (!stepValid[step]) {
       toast.error(
         step === 0
-          ? "Pick the type of help you need"
+          ? 'Pick the type of help you need'
           : step === 1
-            ? "Tell us where the vehicle is"
-            : "Add your name and phone number",
+            ? 'Tell us where the vehicle is'
+            : 'Add your name and phone number',
       )
       return
     }
@@ -117,9 +115,9 @@ export function RescueWizard() {
         },
         locationLabel: locationLabel.trim(),
         issue: issue.trim(),
-        priority: urgent ? "URGENT" : "NORMAL",
+        priority: urgent ? 'URGENT' : 'NORMAL',
       })
-      toast.success("Request created — tracking your rescue.")
+      toast.success('Request created — tracking your rescue.')
       router.push(`/request/${request.id}`)
     }, 700)
   }
@@ -132,22 +130,20 @@ export function RescueWizard() {
             <span
               aria-hidden="true"
               className={cn(
-                "flex size-6 shrink-0 items-center justify-center rounded-full text-xs font-semibold",
+                'flex size-6 shrink-0 items-center justify-center rounded-full text-xs font-semibold',
                 index === step
-                  ? "bg-primary text-primary-foreground"
+                  ? 'bg-primary text-primary-foreground'
                   : index < step
-                    ? "bg-success/15 text-success"
-                    : "bg-muted text-muted-foreground",
+                    ? 'bg-success/15 text-success'
+                    : 'bg-muted text-muted-foreground',
               )}
             >
               {index + 1}
             </span>
             <span
               className={cn(
-                "hidden text-xs font-medium sm:inline",
-                index === step
-                  ? "text-foreground"
-                  : "text-muted-foreground",
+                'hidden text-xs font-medium sm:inline',
+                index === step ? 'text-foreground' : 'text-muted-foreground',
               )}
             >
               {label}
@@ -156,8 +152,8 @@ export function RescueWizard() {
               <span
                 aria-hidden="true"
                 className={cn(
-                  "mx-1 h-px flex-1",
-                  index < step ? "bg-success/40" : "bg-border",
+                  'mx-1 h-px flex-1',
+                  index < step ? 'bg-success/40' : 'bg-border',
                 )}
               />
             ) : null}
@@ -186,18 +182,18 @@ export function RescueWizard() {
                     onClick={() => setServiceType(option.slug)}
                     aria-pressed={selected}
                     className={cn(
-                      "ring-border flex items-start gap-3 rounded-xl border p-4 text-left transition-all ring-1 ring-inset",
+                      'ring-border flex items-start gap-3 rounded-xl border p-4 text-left ring-1 transition-all ring-inset',
                       selected
-                        ? "border-primary bg-primary/5 ring-primary/30"
-                        : "bg-card hover:bg-muted/50",
+                        ? 'border-primary bg-primary/5 ring-primary/30'
+                        : 'bg-card hover:bg-muted/50',
                     )}
                   >
                     <span
                       className={cn(
-                        "flex size-9 shrink-0 items-center justify-center rounded-lg",
+                        'flex size-9 shrink-0 items-center justify-center rounded-lg',
                         selected
-                          ? "bg-primary text-primary-foreground"
-                          : "bg-subtle text-foreground ring-border ring-1 ring-inset",
+                          ? 'bg-primary text-primary-foreground'
+                          : 'bg-subtle text-foreground ring-border ring-1 ring-inset',
                       )}
                     >
                       <option.icon className="size-4.5" aria-hidden="true" />
@@ -279,7 +275,9 @@ export function RescueWizard() {
             </div>
 
             <div className="flex flex-col gap-1.5">
-              <Label htmlFor="wizard-issue">What&apos;s wrong? (optional)</Label>
+              <Label htmlFor="wizard-issue">
+                What&apos;s wrong? (optional)
+              </Label>
               <Textarea
                 id="wizard-issue"
                 value={issue}
@@ -313,8 +311,8 @@ export function RescueWizard() {
                 <span className="text-muted-foreground">Vehicle</span>
                 <span className="text-foreground font-medium">
                   {registration ||
-                    [make, model].filter(Boolean).join(" ") ||
-                    "—"}
+                    [make, model].filter(Boolean).join(' ') ||
+                    '—'}
                 </span>
               </div>
               <div className="flex items-center justify-between gap-3">

@@ -1,27 +1,28 @@
-"use client"
+'use client'
 
-import * as React from "react"
-import Link from "next/link"
-import { useRouter } from "next/navigation"
-import { Car, History, Plus, Radar, Trash2 } from "lucide-react"
-import { useRequestsStore, listRequests } from "@/features/requests/store"
-import {
-  SERVICE_REQUEST_STATUS_CONFIG,
-} from "@/features/roadside/status"
-import { StatusBadge } from "@/components/ui/status-badge"
-import { Button } from "@/components/ui/button"
-import { EmptyState } from "@/components/ui/empty-state"
-import { getServiceBySlug } from "@/config/services"
+import * as React from 'react'
+import Link from 'next/link'
+import { useRouter } from 'next/navigation'
+import { Car, History, Plus, Radar, Trash2 } from 'lucide-react'
+import { useRequestsStore, listRequests } from '@/features/requests/store'
+import { SERVICE_REQUEST_STATUS_CONFIG } from '@/features/roadside/status'
+import { StatusBadge } from '@/components/ui/status-badge'
+import { Button } from '@/components/ui/button'
+import { EmptyState } from '@/components/ui/empty-state'
+import { getServiceBySlug } from '@/config/services'
 
 function timeAgo(iso: string): string {
-  const seconds = Math.max(0, Math.floor((Date.now() - new Date(iso).getTime()) / 1000))
-  if (seconds < 60) return "just now"
+  const seconds = Math.max(
+    0,
+    Math.floor((Date.now() - new Date(iso).getTime()) / 1000),
+  )
+  if (seconds < 60) return 'just now'
   const minutes = Math.floor(seconds / 60)
   if (minutes < 60) return `${minutes} min ago`
   const hours = Math.floor(minutes / 60)
-  if (hours < 24) return `${hours} hr${hours === 1 ? "" : "s"} ago`
+  if (hours < 24) return `${hours} hr${hours === 1 ? '' : 's'} ago`
   const days = Math.floor(hours / 24)
-  return `${days} day${days === 1 ? "" : "s"} ago`
+  return `${days} day${days === 1 ? '' : 's'} ago`
 }
 
 export function CustomerDashboard() {
@@ -32,12 +33,12 @@ export function CustomerDashboard() {
 
   function handleDemo() {
     const request = createRequest({
-      serviceType: "roadside",
-      name: "Demo Driver",
-      phone: "0712 345 678",
-      vehicle: { make: "Toyota", model: "Axio", registration: "KDE 493M" },
-      locationLabel: "Thika Road Mall, ground floor parking",
-      issue: "Battery dead after parking for an hour.",
+      serviceType: 'roadside',
+      name: 'Demo Driver',
+      phone: '0712 345 678',
+      vehicle: { make: 'Toyota', model: 'Axio', registration: 'KDE 493M' },
+      locationLabel: 'Thika Road Mall, ground floor parking',
+      issue: 'Battery dead after parking for an hour.',
     })
     router.push(`/request/${request.id}`)
   }
@@ -73,7 +74,7 @@ export function CustomerDashboard() {
                 SERVICE_REQUEST_STATUS_CONFIG[request.status] ??
                 SERVICE_REQUEST_STATUS_CONFIG.CREATED
               const service = getServiceBySlug(request.serviceType)
-              const done = request.status === "COMPLETED"
+              const done = request.status === 'COMPLETED'
               return (
                 <div
                   key={request.id}
@@ -83,14 +84,17 @@ export function CustomerDashboard() {
                     <span
                       className={
                         done
-                          ? "bg-success/10 text-success flex size-10 shrink-0 items-center justify-center rounded-lg"
-                          : "bg-subtle text-foreground ring-border flex size-10 shrink-0 items-center justify-center rounded-lg ring-1 ring-inset"
+                          ? 'bg-success/10 text-success flex size-10 shrink-0 items-center justify-center rounded-lg'
+                          : 'bg-subtle text-foreground ring-border flex size-10 shrink-0 items-center justify-center rounded-lg ring-1 ring-inset'
                       }
                     >
                       {done ? (
                         <Car className="size-5" aria-hidden="true" />
                       ) : (
-                        <Radar className="size-5 animate-pulse" aria-hidden="true" />
+                        <Radar
+                          className="size-5 animate-pulse"
+                          aria-hidden="true"
+                        />
                       )}
                     </span>
                     <div className="flex min-w-0 flex-col gap-0.5">
@@ -101,8 +105,8 @@ export function CustomerDashboard() {
                         {request.vehicle.registration ||
                           [request.vehicle.make, request.vehicle.model]
                             .filter(Boolean)
-                            .join(" ") ||
-                          "Vehicle not specified"}{" "}
+                            .join(' ') ||
+                          'Vehicle not specified'}{' '}
                         · {request.locationLabel}
                       </p>
                       <p className="text-muted-foreground text-xs">
@@ -120,7 +124,7 @@ export function CustomerDashboard() {
                       size="sm"
                       render={<Link href={`/request/${request.id}`} />}
                     >
-                      {done ? "View" : "Track"}
+                      {done ? 'View' : 'Track'}
                     </Button>
                     <Button
                       variant="ghost"

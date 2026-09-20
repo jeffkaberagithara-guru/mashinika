@@ -1,9 +1,10 @@
-"use client"
+'use client'
 
-import * as React from "react"
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
-import { Toaster } from "@/components/ui/sonner"
-import { TooltipProvider } from "@/components/ui/tooltip"
+import * as React from 'react'
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import { ThemeProvider } from 'next-themes'
+import { Toaster } from '@/components/ui/sonner'
+import { TooltipProvider } from '@/components/ui/tooltip'
 
 function makeQueryClient() {
   return new QueryClient({
@@ -20,7 +21,7 @@ function makeQueryClient() {
 let browserQueryClient: QueryClient | undefined
 
 function getQueryClient() {
-  if (typeof window === "undefined") {
+  if (typeof window === 'undefined') {
     return makeQueryClient()
   }
   if (!browserQueryClient) {
@@ -34,10 +35,17 @@ export function Providers({ children }: { children: React.ReactNode }) {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <TooltipProvider>
-        {children}
-        <Toaster position="top-center" richColors closeButton />
-      </TooltipProvider>
+      <ThemeProvider
+        attribute="class"
+        defaultTheme="system"
+        enableSystem
+        disableTransitionOnChange
+      >
+        <TooltipProvider>
+          {children}
+          <Toaster position="top-center" richColors closeButton />
+        </TooltipProvider>
+      </ThemeProvider>
     </QueryClientProvider>
   )
 }

@@ -1,37 +1,37 @@
-import type { ServiceRequestId } from "@/types/service-request"
-import type { UserId } from "@/types/user"
+import type { ServiceRequestId } from '@/types/service-request'
+import type { UserId } from '@/types/user'
 
 export type PaymentId = string
 export type PaymentMethodId = string
 
 export const PAYMENT_STATUSES = [
-  "PENDING",
-  "AUTHORIZED",
-  "PAID",
-  "FAILED",
-  "REFUNDED",
-  "PARTIALLY_REFUNDED",
+  'PENDING',
+  'AUTHORIZED',
+  'PAID',
+  'FAILED',
+  'REFUNDED',
+  'PARTIALLY_REFUNDED',
 ] as const
 export type PaymentStatus = (typeof PAYMENT_STATUSES)[number]
 
 export const PAYMENT_PROVIDERS = [
-  "MPESA",
-  "CARD",
-  "BANK_TRANSFER",
-  "CASH",
-  "PAYPAL",
+  'MPESA',
+  'CARD',
+  'BANK_TRANSFER',
+  'CASH',
+  'PAYPAL',
 ] as const
 export type PaymentProvider = (typeof PAYMENT_PROVIDERS)[number]
 
 export const PAYMENT_METHODS = [
-  "MPESA",
-  "CARD",
-  "BANK_ACCOUNT",
-  "CASH",
+  'MPESA',
+  'CARD',
+  'BANK_ACCOUNT',
+  'CASH',
 ] as const
 export type PaymentMethod = (typeof PAYMENT_METHODS)[number]
 
-export const CURRENCY_CODES = ["KES", "USD"] as const
+export const CURRENCY_CODES = ['KES', 'USD'] as const
 export type CurrencyCode = (typeof CURRENCY_CODES)[number]
 
 export interface Payment {

@@ -1,7 +1,7 @@
-import Link from "next/link"
-import { Car, Home } from "lucide-react"
-import { Button } from "@/components/ui/button"
-import { siteConfig } from "@/config/site"
+import Link from 'next/link'
+import { Car, Home } from 'lucide-react'
+import { Button } from '@/components/ui/button'
+import { siteConfig } from '@/config/site'
 
 export default function NotFound() {
   return (
@@ -10,15 +10,15 @@ export default function NotFound() {
         <Car className="size-6" aria-hidden="true" />
       </span>
       <div className="flex flex-col gap-2">
-        <p className="text-muted-foreground text-sm font-medium uppercase tracking-wide">
+        <p className="text-muted-foreground text-sm font-medium tracking-wide uppercase">
           404 · Page not found
         </p>
         <h1 className="text-foreground text-3xl font-semibold tracking-tight sm:text-4xl">
           This road doesn&apos;t lead anywhere
         </h1>
         <p className="text-muted-foreground mx-auto max-w-md text-sm leading-relaxed">
-          The page you&apos;re looking for doesn&apos;t exist — but {siteConfig.name}{" "}
-          help is only a tap away.
+          The page you&apos;re looking for doesn&apos;t exist — but{' '}
+          {siteConfig.name} help is only a tap away.
         </p>
       </div>
       <div className="flex flex-col gap-3 sm:flex-row">

@@ -1,10 +1,10 @@
-import type { ComponentProps } from "react"
-import type { LucideIcon } from "lucide-react"
-import { ArrowUpRight } from "lucide-react"
-import Link from "next/link"
-import { cn } from "cn"
+import type { ComponentProps } from 'react'
+import type { LucideIcon } from 'lucide-react'
+import { ArrowUpRight } from 'lucide-react'
+import Link from 'next/link'
+import { cn } from 'cn'
 
-export type ServiceCardProps = ComponentProps<"div"> & {
+export type ServiceCardProps = ComponentProps<'div'> & {
   icon: LucideIcon
   title: string
   description: string
@@ -25,7 +25,7 @@ export function ServiceCard({
     <>
       <span
         className={cn(
-          "bg-subtle text-foreground ring-border flex size-10 shrink-0 items-center justify-center rounded-xl ring-1 ring-inset",
+          'bg-subtle text-foreground ring-border flex size-10 shrink-0 items-center justify-center rounded-xl ring-1 ring-inset',
           iconClassName,
         )}
       >
@@ -49,8 +49,8 @@ export function ServiceCard({
   )
 
   const classes = cn(
-    "group flex items-start gap-3.5 rounded-xl border border-border bg-card p-4 text-left shadow-sm transition-colors",
-    href ? "cursor-pointer hover:border-primary/30 hover:shadow-md" : undefined,
+    'group flex items-start gap-3.5 rounded-xl border border-border bg-card p-4 text-left shadow-sm transition-colors',
+    href ? 'cursor-pointer hover:border-primary/30 hover:shadow-md' : undefined,
     className,
   )
 

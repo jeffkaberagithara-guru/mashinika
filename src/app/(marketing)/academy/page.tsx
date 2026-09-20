@@ -1,36 +1,40 @@
-import type { Metadata } from "next"
-import Link from "next/link"
-import { BookOpen, GraduationCap, ShieldCheck, Trophy } from "lucide-react"
-import { Button } from "@/components/ui/button"
-import { StatusBadge } from "@/components/ui/status-badge"
-import { siteConfig } from "@/config/site"
+import type { Metadata } from 'next'
+import Link from 'next/link'
+import { BookOpen, GraduationCap, ShieldCheck, Trophy } from 'lucide-react'
+import { Button } from '@/components/ui/button'
+import { StatusBadge } from '@/components/ui/status-badge'
+import { siteConfig } from '@/config/site'
 
 export const metadata: Metadata = {
-  title: "Academy",
+  title: 'Academy',
   description:
-    "Training that turns everyday owners into confident technicians. Courses, certification and hands-on skills from Mashinika.",
+    'Training that turns everyday owners into confident technicians. Courses, certification and hands-on skills from Mashinika.',
 }
 
 const programs = [
   {
     icon: BookOpen,
-    title: "Owner maintenance",
-    detail: "Fluids, filters, tyres, batteries and simple checks — keep your own car healthy and avoid surprises.",
+    title: 'Owner maintenance',
+    detail:
+      'Fluids, filters, tyres, batteries and simple checks — keep your own car healthy and avoid surprises.',
   },
   {
     icon: GraduationCap,
-    title: "Technician certification",
-    detail: "A practical pathway from apprentice to certified technician, ready for the Mashinika network.",
+    title: 'Technician certification',
+    detail:
+      'A practical pathway from apprentice to certified technician, ready for the Mashinika network.',
   },
   {
     icon: ShieldCheck,
-    title: "Safety & roadside skills",
-    detail: "Accident-site basics, safe jacking, first response and handling breakdowns without risk.",
+    title: 'Safety & roadside skills',
+    detail:
+      'Accident-site basics, safe jacking, first response and handling breakdowns without risk.',
   },
   {
     icon: Trophy,
-    title: "Advanced diagnostics",
-    detail: "Fault codes, electrical systems and professional reporting for the mobile diagnostics track.",
+    title: 'Advanced diagnostics',
+    detail:
+      'Fault codes, electrical systems and professional reporting for the mobile diagnostics track.',
   },
 ]
 
@@ -52,7 +56,11 @@ export default function AcademyPage() {
             <Button size="lg" render={<Link href="/request" />}>
               Enquire about courses
             </Button>
-            <Button variant="outline" size="lg" render={<Link href="/technician" />}>
+            <Button
+              variant="outline"
+              size="lg"
+              render={<Link href="/technician" />}
+            >
               Become a technician
             </Button>
           </div>

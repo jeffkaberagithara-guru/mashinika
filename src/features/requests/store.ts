@@ -1,8 +1,8 @@
-"use client"
+'use client'
 
-import { create } from "zustand"
-import { persist } from "zustand/middleware"
-import type { ServiceRequestStatus } from "@/types/service-request"
+import { create } from 'zustand'
+import { persist } from 'zustand/middleware'
+import type { ServiceRequestStatus } from '@/types/service-request'
 
 /** Kept loose: maps onto the `service_type` enum values in the DB. */
 export type RescueVehicle = {
@@ -15,7 +15,7 @@ export type RescueRequest = {
   id: string
   serviceType: string
   status: ServiceRequestStatus
-  priority: "NORMAL" | "URGENT"
+  priority: 'NORMAL' | 'URGENT'
   name: string
   phone: string
   vehicle: RescueVehicle
@@ -33,7 +33,7 @@ export type RescueRequestInput = {
   vehicle: RescueVehicle
   locationLabel: string
   issue: string
-  priority?: "NORMAL" | "URGENT"
+  priority?: 'NORMAL' | 'URGENT'
 }
 
 type RequestsStore = {
@@ -55,8 +55,8 @@ export const useRequestsStore = create<RequestsStore>()(
           id,
           ...input,
           serviceType: input.serviceType,
-          priority: input.priority ?? "NORMAL",
-          status: "CREATED",
+          priority: input.priority ?? 'NORMAL',
+          status: 'CREATED',
           technicianId: null,
           createdAt: now,
           updatedAt: now,
@@ -68,13 +68,13 @@ export const useRequestsStore = create<RequestsStore>()(
         set((state) => {
           const request = state.requests[id]
           if (!request) return state
-          if (request.status !== "SEARCHING_FOR_TECHNICIAN") return state
+          if (request.status !== 'SEARCHING_FOR_TECHNICIAN') return state
           return {
             requests: {
               ...state.requests,
               [id]: {
                 ...request,
-                status: "TECHNICIAN_ASSIGNED",
+                status: 'TECHNICIAN_ASSIGNED',
                 technicianId,
                 updatedAt: new Date().toISOString(),
               },
@@ -101,7 +101,7 @@ export const useRequestsStore = create<RequestsStore>()(
           return { requests: rest }
         }),
     }),
-    { name: "mashinika:requests" },
+    { name: 'mashinika:requests' },
   ),
 )
 

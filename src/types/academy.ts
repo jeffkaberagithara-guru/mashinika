@@ -1,6 +1,6 @@
-import type { UserId } from "@/types/user"
-import type { VehicleId } from "@/types/vehicle"
-import type { TechnicianId } from "@/types/technician"
+import type { UserId } from '@/types/user'
+import type { VehicleId } from '@/types/vehicle'
+import type { TechnicianId } from '@/types/technician'
 
 export type AcademyCourseId = string
 export type AcademyModuleId = string
@@ -8,20 +8,21 @@ export type AcademyLessonId = string
 export type AcademyEnrollmentId = string
 
 export const ACADEMY_COURSE_LEVELS = [
-  "BEGINNER",
-  "INTERMEDIATE",
-  "ADVANCED",
-  "EXPERT",
+  'BEGINNER',
+  'INTERMEDIATE',
+  'ADVANCED',
+  'EXPERT',
 ] as const
 export type AcademyCourseLevel = (typeof ACADEMY_COURSE_LEVELS)[number]
 
 export const ACADEMY_ENROLLMENT_STATUSES = [
-  "ACTIVE",
-  "PAUSED",
-  "COMPLETED",
-  "DROPPED",
+  'ACTIVE',
+  'PAUSED',
+  'COMPLETED',
+  'DROPPED',
 ] as const
-export type AcademyEnrollmentStatus = (typeof ACADEMY_ENROLLMENT_STATUSES)[number]
+export type AcademyEnrollmentStatus =
+  (typeof ACADEMY_ENROLLMENT_STATUSES)[number]
 
 export interface AcademyCourse {
   id: AcademyCourseId
@@ -66,13 +67,16 @@ export interface LessonProgress {
   completedAt: string | null
 }
 
-export type AcademyReference = {
-  type: "COURSE"
-  id: AcademyCourseId
-} | {
-  type: "TECHNICIAN"
-  id: TechnicianId
-} | {
-  type: "VEHICLE"
-  id: VehicleId
-}
+export type AcademyReference =
+  | {
+      type: 'COURSE'
+      id: AcademyCourseId
+    }
+  | {
+      type: 'TECHNICIAN'
+      id: TechnicianId
+    }
+  | {
+      type: 'VEHICLE'
+      id: VehicleId
+    }

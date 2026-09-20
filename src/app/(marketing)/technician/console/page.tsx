@@ -1,11 +1,11 @@
-import type { Metadata } from "next"
-import { TechnicianConsole } from "@/features/technicians/components/technician-console"
-import { demoTechnicians } from "@/features/technicians/data"
+import type { Metadata } from 'next'
+import { TechnicianConsole } from '@/features/technicians/components/technician-console'
+import { demoTechnicians } from '@/features/technicians/data'
 
 export const metadata: Metadata = {
-  title: "Dispatch console",
+  title: 'Dispatch console',
   description:
-    "Preview the open rescue queue and accept jobs as a demo Mashinika technician.",
+    'Preview the open rescue queue and accept jobs as a demo Mashinika technician.',
 }
 
 type TechnicianConsolePageProps = {

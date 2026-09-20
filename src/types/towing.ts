@@ -1,28 +1,27 @@
-import type { GeoPoint } from "@/types/location"
-import type { ServiceRequestId } from "@/types/service-request"
-import type { TechnicianId } from "@/types/technician"
-import type { UserId } from "@/types/user"
-import type { VehicleType } from "@/types/vehicle"
+import type { GeoPoint } from '@/types/location'
+import type { ServiceRequestId } from '@/types/service-request'
+import type { TechnicianId } from '@/types/technician'
+import type { UserId } from '@/types/user'
 
 export type TowingRequestId = string
 
 export const TOWING_REQUEST_STATUSES = [
-  "CREATED",
-  "TECHNICIAN_ASSIGNED",
-  "EN_ROUTE",
-  "ARRIVED",
-  "LOADING",
-  "TOWING",
-  "DELIVERED",
-  "CANCELLED",
+  'CREATED',
+  'TECHNICIAN_ASSIGNED',
+  'EN_ROUTE',
+  'ARRIVED',
+  'LOADING',
+  'TOWING',
+  'DELIVERED',
+  'CANCELLED',
 ] as const
 export type TowingRequestStatus = (typeof TOWING_REQUEST_STATUSES)[number]
 
 export const TOWING_VEHICLE_TYPES = [
-  "FLATBED",
-  "WHEEL_LIFT",
-  "HOOK_CHAIN",
-  "HEAVY_DUTY",
+  'FLATBED',
+  'WHEEL_LIFT',
+  'HOOK_CHAIN',
+  'HEAVY_DUTY',
 ] as const
 export type TowingVehicleType = (typeof TOWING_VEHICLE_TYPES)[number]
 

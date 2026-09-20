@@ -1,12 +1,12 @@
-import type { Metadata } from "next"
-import { PhoneCall, Siren } from "lucide-react"
-import { RequestForm } from "@/components/request/request-form"
-import { StatusBadge } from "@/components/ui/status-badge"
+import type { Metadata } from 'next'
+import { PhoneCall, Siren } from 'lucide-react'
+import { RequestForm } from '@/components/request/request-form'
+import { StatusBadge } from '@/components/ui/status-badge'
 
 export const metadata: Metadata = {
-  title: "Emergency",
+  title: 'Emergency',
   description:
-    "Emergency roadside help: breakdown, dead battery, flat tyre, fuel or lost keys. Help is minutes away.",
+    'Emergency roadside help: breakdown, dead battery, flat tyre, fuel or lost keys. Help is minutes away.',
 }
 
 export default function EmergencyPage() {
@@ -35,8 +35,11 @@ export default function EmergencyPage() {
                 Prefer to call?
               </span>
               <span className="text-muted-foreground text-sm">
-                Call the rescue line:{" "}
-                <a href="tel:+254700000000" className="text-primary font-medium">
+                Call the rescue line:{' '}
+                <a
+                  href="tel:+254700000000"
+                  className="text-primary font-medium"
+                >
                   +254 700 000 000
                 </a>
               </span>
@@ -44,7 +47,10 @@ export default function EmergencyPage() {
           </div>
 
           <div className="flex items-start gap-3">
-            <Siren className="text-destructive mt-0.5 size-4 shrink-0" aria-hidden="true" />
+            <Siren
+              className="text-destructive mt-0.5 size-4 shrink-0"
+              aria-hidden="true"
+            />
             <p className="text-muted-foreground text-xs leading-relaxed">
               If you or anyone is injured, or there&apos;s a fire or a serious
               accident, call 112 / 999 first — emergency services outrank any

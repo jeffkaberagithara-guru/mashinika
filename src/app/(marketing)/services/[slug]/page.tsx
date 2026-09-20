@@ -1,6 +1,6 @@
-import type { Metadata } from "next"
-import Link from "next/link"
-import { notFound } from "next/navigation"
+import type { Metadata } from 'next'
+import Link from 'next/link'
+import { notFound } from 'next/navigation'
 import {
   Activity,
   ArrowLeftRight,
@@ -14,13 +14,20 @@ import {
   Truck,
   Users,
   Wrench,
-} from "lucide-react"
-import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from "@/components/ui/breadcrumb"
-import { Button } from "@/components/ui/button"
-import { StatusBadge } from "@/components/ui/status-badge"
-import { ServiceCard } from "@/components/marketing/service-card"
-import { getServiceBySlug, services } from "@/config/services"
-import { siteConfig } from "@/config/site"
+} from 'lucide-react'
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+} from '@/components/ui/breadcrumb'
+import { Button } from '@/components/ui/button'
+import { StatusBadge } from '@/components/ui/status-badge'
+import { ServiceCard } from '@/components/marketing/service-card'
+import { getServiceBySlug, services } from '@/config/services'
+import { siteConfig } from '@/config/site'
 
 const serviceIcons: Record<string, typeof LifeBuoy> = {
   rescue: LifeBuoy,
@@ -49,8 +56,8 @@ export async function generateMetadata({
 
   if (!service) {
     return {
-      title: "Service not found",
-      description: "The service you are looking for does not exist.",
+      title: 'Service not found',
+      description: 'The service you are looking for does not exist.',
     }
   }
 
@@ -58,8 +65,8 @@ export async function generateMetadata({
     title: service.name,
     description: service.description,
     openGraph: {
-      type: "website",
-      locale: "en_KE",
+      type: 'website',
+      locale: 'en_KE',
       siteName: siteConfig.name,
       title: `${service.name} | ${siteConfig.name}`,
       description: service.description,
@@ -101,7 +108,7 @@ export default async function ServicePage({ params }: ServicePageProps) {
 
           <div className="flex flex-wrap items-center gap-2">
             <StatusBadge
-              tone={service.emergency ? "danger" : "primary"}
+              tone={service.emergency ? 'danger' : 'primary'}
               pulse={service.emergency}
             >
               {service.brand}
@@ -119,13 +126,17 @@ export default async function ServicePage({ params }: ServicePageProps) {
           <div className="mt-2 flex flex-col gap-3 sm:flex-row">
             <Button
               size="lg"
-              variant={service.emergency ? "default" : "default"}
+              variant={service.emergency ? 'default' : 'default'}
               render={<Link href={service.ctaHref} />}
             >
               {service.ctaLabel}
               <ChevronRight className="size-4" aria-hidden="true" />
             </Button>
-            <Button variant="outline" size="lg" render={<Link href="/services" />}>
+            <Button
+              variant="outline"
+              size="lg"
+              render={<Link href="/services" />}
+            >
               View all services
             </Button>
           </div>

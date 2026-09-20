@@ -1,14 +1,19 @@
 export type UserId = string
 
-export const USER_ROLES = ["CUSTOMER", "TECHNICIAN", "DISPATCHER", "ADMIN"] as const
+export const USER_ROLES = [
+  'CUSTOMER',
+  'TECHNICIAN',
+  'DISPATCHER',
+  'ADMIN',
+] as const
 export type UserRole = (typeof USER_ROLES)[number]
 
 export const ROLES_BY_ACCESS = {
   public: [],
-  customer: ["CUSTOMER"],
-  technician: ["TECHNICIAN"],
-  dispatcher: ["DISPATCHER", "ADMIN"],
-  admin: ["ADMIN"],
+  customer: ['CUSTOMER'],
+  technician: ['TECHNICIAN'],
+  dispatcher: ['DISPATCHER', 'ADMIN'],
+  admin: ['ADMIN'],
 } as const
 export type RoleAccess = typeof ROLES_BY_ACCESS
 

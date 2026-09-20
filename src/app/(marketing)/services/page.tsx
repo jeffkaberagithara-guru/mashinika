@@ -1,4 +1,4 @@
-import type { Metadata } from "next"
+import type { Metadata } from 'next'
 import {
   Activity,
   ArrowLeftRight,
@@ -10,18 +10,18 @@ import {
   Truck,
   Users,
   Wrench,
-} from "lucide-react"
-import { StatusBadge } from "@/components/ui/status-badge"
-import { ServiceCard } from "@/components/marketing/service-card"
-import { Button } from "@/components/ui/button"
-import Link from "next/link"
-import { services } from "@/config/services"
-import { siteConfig } from "@/config/site"
+} from 'lucide-react'
+import { StatusBadge } from '@/components/ui/status-badge'
+import { ServiceCard } from '@/components/marketing/service-card'
+import { Button } from '@/components/ui/button'
+import Link from 'next/link'
+import { services } from '@/config/services'
+import { siteConfig } from '@/config/site'
 
 export const metadata: Metadata = {
-  title: "Services",
+  title: 'Services',
   description:
-    "Roadside rescue, diagnostics, towing, inspections, fleet care and more from one platform.",
+    'Roadside rescue, diagnostics, towing, inspections, fleet care and more from one platform.',
 }
 
 const serviceIcons: Record<string, typeof LifeBuoy> = {

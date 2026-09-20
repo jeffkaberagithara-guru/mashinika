@@ -1,7 +1,7 @@
-"use client"
+'use client'
 
-import * as React from "react"
-import Link from "next/link"
+import * as React from 'react'
+import Link from 'next/link'
 import {
   AlertTriangle,
   ArrowLeft,
@@ -10,24 +10,23 @@ import {
   Radio,
   Star,
   UserRound,
-  Wrench,
-} from "lucide-react"
-import { useRequestsStore } from "@/features/requests/store"
+} from 'lucide-react'
+import { useRequestsStore } from '@/features/requests/store'
 import {
   SIMULATION_STEP_MS,
   etaMinutesFor,
   nextStatus,
   statusSequence,
-} from "@/features/request/simulation"
+} from '@/features/request/simulation'
 import {
   SERVICE_REQUEST_STATUS_CONFIG,
   SERVICE_REQUEST_STATUS_ICONS,
-} from "@/features/roadside/status"
-import { StatusBadge } from "@/components/ui/status-badge"
-import { Timeline, type TimelineItem } from "@/components/ui/timeline"
-import { Button } from "@/components/ui/button"
-import { getServiceBySlug } from "@/config/services"
-import { getTechnician } from "@/features/technicians/data"
+} from '@/features/roadside/status'
+import { StatusBadge } from '@/components/ui/status-badge'
+import { Timeline, type TimelineItem } from '@/components/ui/timeline'
+import { Button } from '@/components/ui/button'
+import { getServiceBySlug } from '@/config/services'
+import { getTechnician } from '@/features/technicians/data'
 
 function formatElapsed(startIso: string): string {
   const seconds = Math.max(
@@ -36,7 +35,7 @@ function formatElapsed(startIso: string): string {
   )
   const m = Math.floor(seconds / 60)
   const s = seconds % 60
-  return `${String(m).padStart(2, "0")}:${String(s).padStart(2, "0")}`
+  return `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`
 }
 
 export function TrackingView({ requestId }: { requestId: string }) {
@@ -92,17 +91,17 @@ export function TrackingView({ requestId }: { requestId: string }) {
     SERVICE_REQUEST_STATUS_CONFIG[request.status] ??
     SERVICE_REQUEST_STATUS_CONFIG.CREATED
   const eta = etaMinutesFor(request.serviceType)
-  const isUrgent = request.priority === "URGENT"
+  const isUrgent = request.priority === 'URGENT'
   const assignedTechnician = getTechnician(request.technicianId)
 
   const timelineItems: TimelineItem[] = sequence.map((status, index) => {
     const statusConfig = SERVICE_REQUEST_STATUS_CONFIG[status]
     const state =
       index < currentIndex
-        ? ("completed" as const)
+        ? ('completed' as const)
         : index === currentIndex
-          ? ("active" as const)
-          : ("pending" as const)
+          ? ('active' as const)
+          : ('pending' as const)
     return {
       id: status,
       title: statusConfig.label,
@@ -115,7 +114,7 @@ export function TrackingView({ requestId }: { requestId: string }) {
   })
 
   return (
-    <div className="mx-auto flex w-full max-w-2xl flex-col gap-5">
+    <div className="mx-auto flex w-full max-w-2xl flex-col gap-5 px-4 pt-10 pb-16 sm:px-6 lg:px-8">
       <Link
         href="/customer"
         className="text-muted-foreground hover:text-foreground inline-flex items-center gap-1.5 text-sm font-medium"
@@ -127,14 +126,17 @@ export function TrackingView({ requestId }: { requestId: string }) {
       <div className="border-border bg-card rounded-xl border p-6 shadow-sm">
         <div className="flex items-start justify-between gap-3">
           <div>
-            <p className="text-muted-foreground text-xs font-medium uppercase tracking-wide">
+            <p className="text-muted-foreground text-xs font-medium tracking-wide uppercase">
               Rescue request · {request.id.slice(0, 8)}
             </p>
             <h1 className="text-foreground mt-1 text-2xl font-semibold tracking-tight">
-              {service?.title ?? "Vehicle help"}
+              {service?.title ?? 'Vehicle help'}
             </h1>
           </div>
-          <StatusBadge tone={config.tone} pulse={!["COMPLETED", "CANCELLED"].includes(request.status)}>
+          <StatusBadge
+            tone={config.tone}
+            pulse={!['COMPLETED', 'CANCELLED'].includes(request.status)}
+          >
             {config.shortLabel}
           </StatusBadge>
         </div>
@@ -157,8 +159,8 @@ export function TrackingView({ requestId }: { requestId: string }) {
               {request.vehicle.registration ||
                 [request.vehicle.make, request.vehicle.model]
                   .filter(Boolean)
-                  .join(" ") ||
-                "Not specified"}
+                  .join(' ') ||
+                'Not specified'}
             </p>
           </div>
           <div className="border-border bg-subtle rounded-lg border px-4 py-3">
@@ -169,14 +171,14 @@ export function TrackingView({ requestId }: { requestId: string }) {
           </div>
           <div className="border-border bg-subtle rounded-lg border px-4 py-3">
             <p className="text-muted-foreground text-xs">
-              {["TECHNICIAN_EN_ROUTE", "TECHNICIAN_ARRIVED"].includes(
+              {['TECHNICIAN_EN_ROUTE', 'TECHNICIAN_ARRIVED'].includes(
                 request.status,
               )
-                ? "Status"
-                : "Elapsed"}
+                ? 'Status'
+                : 'Elapsed'}
             </p>
             <p className="text-foreground mt-0.5 flex items-center gap-1.5 text-sm font-medium">
-              {["TECHNICIAN_EN_ROUTE", "TECHNICIAN_ARRIVED"].includes(
+              {['TECHNICIAN_EN_ROUTE', 'TECHNICIAN_ARRIVED'].includes(
                 request.status,
               ) ? (
                 <>
@@ -205,9 +207,9 @@ export function TrackingView({ requestId }: { requestId: string }) {
               </span>
               <div className="flex min-w-0 flex-1 flex-col">
                 <p className="text-muted-foreground text-xs">
-                  {request.status === "TECHNICIAN_ASSIGNED"
-                    ? "Your technician"
-                    : "On the way"}
+                  {request.status === 'TECHNICIAN_ASSIGNED'
+                    ? 'Your technician'
+                    : 'On the way'}
                 </p>
                 <p className="text-foreground truncate text-sm font-semibold">
                   {assignedTechnician.name}
@@ -231,13 +233,16 @@ export function TrackingView({ requestId }: { requestId: string }) {
             Live status
           </h2>
           <span className="text-muted-foreground inline-flex items-center gap-1.5 text-xs">
-            <Radio className="text-primary size-3.5 animate-pulse" aria-hidden="true" />
+            <Radio
+              className="text-primary size-3.5 animate-pulse"
+              aria-hidden="true"
+            />
             {config.description}
           </span>
         </div>
         <Timeline mutedBehindActive className="pt-5" items={timelineItems} />
 
-        {request.status === "COMPLETED" ? (
+        {request.status === 'COMPLETED' ? (
           <div className="bg-success/10 text-success flex items-center justify-center gap-2 rounded-lg px-4 py-3 text-sm font-semibold">
             <CheckCircle2 className="size-4" aria-hidden="true" />
             Job complete — added to your service history.
