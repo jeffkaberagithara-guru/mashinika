@@ -6,11 +6,13 @@ import {
   AlertTriangle,
   ArrowLeft,
   CheckCircle2,
+  CircleX,
   Clock,
   Radio,
   Star,
   UserRound,
 } from 'lucide-react'
+import { toast } from 'sonner'
 import { useRequestsStore } from '@/features/requests/store'
 import {
   SIMULATION_STEP_MS,
@@ -42,6 +44,7 @@ export function TrackingView({ requestId }: { requestId: string }) {
   const request = useRequestsStore((state) => state.requests[requestId])
   const updateStatus = useRequestsStore((state) => state.updateStatus)
   const [, setTick] = React.useState(0)
+  const [cancelArmed, setCancelArmed] = React.useState(false)
 
   React.useEffect(() => {
     const clock = window.setInterval(() => setTick((value) => value + 1), 1000)
@@ -92,7 +95,18 @@ export function TrackingView({ requestId }: { requestId: string }) {
     SERVICE_REQUEST_STATUS_CONFIG.CREATED
   const eta = etaMinutesFor(request.serviceType)
   const isUrgent = request.priority === 'URGENT'
+  const isTerminal = ['COMPLETED', 'CANCELLED'].includes(request.status)
   const assignedTechnician = getTechnician(request.technicianId)
+
+  function handleCancel() {
+    if (!cancelArmed) {
+      setCancelArmed(true)
+      window.setTimeout(() => setCancelArmed(false), 2600)
+      return
+    }
+    updateStatus(request.id, 'CANCELLED')
+    toast.success('Request cancelled.')
+  }
 
   const timelineItems: TimelineItem[] = sequence.map((status, index) => {
     const statusConfig = SERVICE_REQUEST_STATUS_CONFIG[status]
@@ -219,10 +233,29 @@ export function TrackingView({ requestId }: { requestId: string }) {
                 </p>
               </div>
               <span className="text-foreground inline-flex items-center gap-1 text-xs font-medium">
-                <Star className="size-3.5 fill-current" aria-hidden="true" />
+                <Star
+                  className="text-warning size-3.5 fill-current"
+                  aria-hidden="true"
+                />
                 {assignedTechnician.rating.toFixed(1)}
               </span>
             </div>
+          </div>
+        ) : null}
+
+        {!isTerminal ? (
+          <div className="mt-4 flex flex-col gap-2 border-t pt-4 sm:flex-row sm:items-center sm:justify-between">
+            <p className="text-muted-foreground text-xs">
+              Changed your mind? You can cancel while the request is active.
+            </p>
+            <Button
+              variant={cancelArmed ? 'destructive' : 'outline'}
+              size="sm"
+              onClick={handleCancel}
+            >
+              <CircleX className="size-4" aria-hidden="true" />
+              {cancelArmed ? 'Tap again to confirm' : 'Cancel request'}
+            </Button>
           </div>
         ) : null}
       </div>
@@ -246,6 +279,12 @@ export function TrackingView({ requestId }: { requestId: string }) {
           <div className="bg-success/10 text-success flex items-center justify-center gap-2 rounded-lg px-4 py-3 text-sm font-semibold">
             <CheckCircle2 className="size-4" aria-hidden="true" />
             Job complete — added to your service history.
+          </div>
+        ) : null}
+        {request.status === 'CANCELLED' ? (
+          <div className="bg-danger/10 text-danger flex items-center justify-center gap-2 rounded-lg px-4 py-3 text-sm font-semibold">
+            <CircleX className="size-4" aria-hidden="true" />
+            Request cancelled — no charges applied.
           </div>
         ) : null}
       </div>

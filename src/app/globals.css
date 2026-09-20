@@ -43,6 +43,7 @@
   --color-surface: var(--surface);
   --color-subtle: var(--subtle);
   --color-success: var(--success);
+  --color-warning: var(--warning);
   --color-danger: var(--danger);
 }
 
@@ -70,6 +71,7 @@
   --surface: #ffffff;
   --subtle: #f1f3f5;
   --success: #16a34a;
+  --warning: #f59e0b;
   --danger: #dc2626;
   --chart-1: #ea580c;
   --chart-2: #16a34a;
@@ -111,6 +113,7 @@
   --surface: #1c2431;
   --subtle: #2a3446;
   --success: #22c55e;
+  --warning: #fbbf24;
   --danger: #ef4444;
   --chart-1: #ea580c;
   --chart-2: #22c55e;
