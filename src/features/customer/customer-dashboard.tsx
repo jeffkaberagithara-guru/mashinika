@@ -26,6 +26,7 @@ import { useGarageStore } from '@/features/garage/store'
 import { useFleetStore } from '@/features/fleet/store'
 import { useCareStore } from '@/features/care/store'
 import { useInspectionsStore } from '@/features/inspect/store'
+import { useSessionStore } from '@/features/authentication/store'
 import { SERVICE_REQUEST_STATUS_CONFIG } from '@/features/roadside/status'
 import { terminalStatuses, statusSequence } from '@/features/request/simulation'
 import { getServiceBySlug } from '@/config/services'
@@ -53,6 +54,7 @@ function timeAgo(iso: string): string {
 
 export function CustomerDashboard() {
   const router = useRouter()
+  const user = useSessionStore((state) => state.user)
   const requests = useRequestsStore(
     useShallow((state) =>
       Object.values(state.requests).sort((a, b) =>
@@ -89,8 +91,8 @@ export function CustomerDashboard() {
   function handleDemo() {
     const request = createRequest({
       serviceType: 'roadside',
-      name: 'Demo Driver',
-      phone: '0712 345 678',
+      name: user?.name || 'Demo Driver',
+      phone: user?.phone || '0712 345 678',
       vehicle: { make: 'Toyota', model: 'Axio', registration: 'KDE 493M' },
       locationLabel: 'Thika Road Mall, ground floor parking',
       issue: 'Battery dead after parking for an hour.',
@@ -137,10 +139,10 @@ export function CustomerDashboard() {
         <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
           <div className="flex flex-col gap-1">
             <h1 className="text-foreground text-3xl font-semibold tracking-tight sm:text-4xl">
-              My dashboard
+              {user && user.name !== 'Customer' ? `Welcome, ${user.name.split(' ')[0]}` : 'My dashboard'}
             </h1>
             <p className="text-muted-foreground text-sm">
-              Track every rescue request, active and past.
+              Track every rescue request, active and past{user?.phone ? ` · ${user.phone}` : ''}.
             </p>
           </div>
           <div className="flex flex-col gap-2 sm:flex-row">

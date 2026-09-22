@@ -31,6 +31,7 @@ import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
 import { useRequestsStore } from '@/features/requests/store'
 import { useNotificationsStore } from '@/features/notifications/store'
+import { useSessionStore } from '@/features/authentication/store'
 import { getServiceBySlug } from '@/config/services'
 
 type ProblemOption = {
@@ -98,6 +99,7 @@ const maxPhotos = 4
 export function RescueWizard() {
   const router = useRouter()
   const createRequest = useRequestsStore((state) => state.createRequest)
+  const user = useSessionStore((state) => state.user)
   const photoInputRef = React.useRef<HTMLInputElement>(null)
 
   const [step, setStep] = React.useState(0)
@@ -113,8 +115,8 @@ export function RescueWizard() {
   const [locating, setLocating] = React.useState(false)
   const [issue, setIssue] = React.useState('')
   const [photos, setPhotos] = React.useState<string[]>([])
-  const [name, setName] = React.useState('')
-  const [phone, setPhone] = React.useState('')
+  const [name, setName] = React.useState(() => user?.name ?? '')
+  const [phone, setPhone] = React.useState(() => user?.phone ?? '')
   const [urgent, setUrgent] = React.useState(false)
   const [tried, setTried] = React.useState(false)
   const [submitting, setSubmitting] = React.useState(false)
