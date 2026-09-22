@@ -1,6 +1,8 @@
 import { HomeHero } from '@/components/marketing/home/hero'
 import { HomeStats } from '@/components/marketing/home/stats'
 import { HomeServices } from '@/components/marketing/home/services'
+import { HomeContext } from '@/components/marketing/home/context'
+import { HomeExpertise } from '@/components/marketing/home/expertise'
 import { HomeHowItWorks } from '@/components/marketing/home/how-it-works'
 import { HomeFeatures } from '@/components/marketing/home/features'
 import { HomeCoverage } from '@/components/marketing/home/coverage'
@@ -20,6 +22,14 @@ export default function Home() {
 
         <Reveal>
           <HomeServices />
+        </Reveal>
+
+        <Reveal>
+          <HomeContext />
+        </Reveal>
+
+        <Reveal>
+          <HomeExpertise />
         </Reveal>
 
         <Reveal>

@@ -34,7 +34,7 @@ export function HomeCta() {
                 className="text-primary hover:text-primary border-transparent bg-white hover:bg-white/90"
                 render={<Link href="/request" />}
               >
-                Get help now
+                GET HELP NOW
                 <ChevronRight className="size-4" aria-hidden="true" />
               </Button>
               <Button

@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import Image from 'next/image'
 import { MapPin } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 
@@ -43,24 +44,41 @@ export function HomeCoverage() {
             </div>
           </div>
 
-          <div className="lg:col-span-7">
-            <ul className="flex flex-wrap gap-2.5">
-              {towns.map((town) => (
-                <li
-                  key={town}
-                  className="border-border bg-card text-foreground hover:border-primary/40 inline-flex items-center gap-2 rounded-full border px-4 py-2 text-sm transition-colors"
-                >
-                  <MapPin
-                    className="text-primary size-3.5"
-                    aria-hidden="true"
-                  />
-                  {town}
+          <div className="relative overflow-hidden rounded-2xl bg-slate-950 lg:col-span-7">
+            <Image
+              src="/media/nairobi-traffic.jpg"
+              alt="Nairobi road network"
+              width={1920}
+              height={1280}
+              sizes="(min-width: 1024px) 58vw, 100vw"
+              className="h-[360px] w-full object-cover opacity-75 sm:h-[420px]"
+            />
+            <div
+              aria-hidden="true"
+              className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/30 to-transparent"
+            />
+            <div className="absolute inset-x-0 bottom-0 p-5 sm:p-7">
+              <p className="mb-3 text-xs font-medium tracking-[0.18em] text-orange-200 uppercase">
+                Live coverage network
+              </p>
+              <ul className="flex flex-wrap gap-2">
+                {towns.map((town) => (
+                  <li
+                    key={town}
+                    className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/10 px-3 py-1.5 text-sm text-white backdrop-blur-sm transition-colors hover:border-orange-300/70 hover:bg-white/20"
+                  >
+                    <MapPin
+                      className="size-3.5 text-orange-300"
+                      aria-hidden="true"
+                    />
+                    {town}
+                  </li>
+                ))}
+                <li className="inline-flex items-center rounded-full px-3 py-1.5 text-sm text-white/65">
+                  + more rolling out…
                 </li>
-              ))}
-              <li className="text-muted-foreground inline-flex items-center rounded-full px-4 py-2 text-sm">
-                + more rolling out…
-              </li>
-            </ul>
+              </ul>
+            </div>
           </div>
         </div>
       </div>

@@ -49,8 +49,10 @@ export function ServiceCard({
   )
 
   const classes = cn(
-    'group flex items-start gap-3.5 rounded-xl border border-border bg-card p-4 text-left shadow-sm transition-colors',
-    href ? 'cursor-pointer hover:border-primary/30 hover:shadow-md' : undefined,
+    'group relative flex items-start gap-3.5 overflow-hidden rounded-xl border border-border bg-card p-4 text-left shadow-sm transition-all duration-300',
+    href
+      ? 'cursor-pointer hover:-translate-y-1 hover:border-primary/40 hover:shadow-xl hover:shadow-primary/10'
+      : undefined,
     className,
   )
 
