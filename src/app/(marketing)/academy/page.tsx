@@ -1,6 +1,6 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
-import { BookOpen, GraduationCap, ShieldCheck, Trophy } from 'lucide-react'
+import { AcademyCatalog } from '@/features/academy/academy-catalog'
 import { Button } from '@/components/ui/button'
 import { StatusBadge } from '@/components/ui/status-badge'
 import { siteConfig } from '@/config/site'
@@ -9,34 +9,10 @@ export const metadata: Metadata = {
   title: 'Academy',
   description:
     'Training that turns everyday owners into confident technicians. Courses, certification and hands-on skills from Mashinika.',
+  alternates: {
+    canonical: '/academy',
+  },
 }
-
-const programs = [
-  {
-    icon: BookOpen,
-    title: 'Owner maintenance',
-    detail:
-      'Fluids, filters, tyres, batteries and simple checks — keep your own car healthy and avoid surprises.',
-  },
-  {
-    icon: GraduationCap,
-    title: 'Technician certification',
-    detail:
-      'A practical pathway from apprentice to certified technician, ready for the Mashinika network.',
-  },
-  {
-    icon: ShieldCheck,
-    title: 'Safety & roadside skills',
-    detail:
-      'Accident-site basics, safe jacking, first response and handling breakdowns without risk.',
-  },
-  {
-    icon: Trophy,
-    title: 'Advanced diagnostics',
-    detail:
-      'Fault codes, electrical systems and professional reporting for the mobile diagnostics track.',
-  },
-]
 
 export default function AcademyPage() {
   return (
@@ -75,23 +51,8 @@ export default function AcademyPage() {
               Courses for every level
             </h2>
           </div>
-          <div className="mt-10 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-            {programs.map((program) => (
-              <div
-                key={program.title}
-                className="border-border bg-card flex flex-col gap-3 rounded-xl border p-5"
-              >
-                <span className="bg-subtle text-foreground ring-border flex size-10 items-center justify-center rounded-lg ring-1 ring-inset">
-                  <program.icon className="size-5" aria-hidden="true" />
-                </span>
-                <h3 className="text-foreground text-sm font-semibold">
-                  {program.title}
-                </h3>
-                <p className="text-muted-foreground text-sm leading-relaxed">
-                  {program.detail}
-                </p>
-              </div>
-            ))}
+          <div className="mt-10">
+            <AcademyCatalog />
           </div>
         </div>
       </section>
