@@ -19,9 +19,13 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { siteConfig } from '@/config/site'
+import {
+  useSessionStore,
+  type SessionRole,
+} from '@/features/authentication/store'
 
 type Role = {
-  id: string
+  id: SessionRole
   label: string
   detail: string
   icon: LucideIcon
@@ -41,7 +45,7 @@ const roles: Role[] = [
     label: 'Technician',
     detail: 'Jobs, diagnosis and earnings',
     icon: Wrench,
-    destination: '/technician',
+    destination: '/technician/console',
   },
   {
     id: 'dispatcher',
@@ -58,7 +62,7 @@ const roles: Role[] = [
     destination: '/fleet',
   },
   {
-    id: 'academy',
+    id: 'student',
     label: 'Student',
     detail: 'Courses, progress and certificates',
     icon: GraduationCap,
@@ -68,7 +72,9 @@ const roles: Role[] = [
 
 export default function LoginPage() {
   const router = useRouter()
+  const signIn = useSessionStore((state) => state.signIn)
   const [role, setRole] = React.useState<Role | null>(null)
+  const [name, setName] = React.useState('')
   const [phone, setPhone] = React.useState('')
   const [status, setStatus] = React.useState<'idle' | 'submitting'>('idle')
 
@@ -84,6 +90,11 @@ export default function LoginPage() {
     }
     setStatus('submitting')
     window.setTimeout(() => {
+      signIn({
+        role: role.id,
+        name: name.trim() || role.label,
+        phone: phone.trim(),
+      })
       setStatus('idle')
       toast.success(`Welcome back — signed in as ${role.label}.`)
       router.push(role.destination)
@@ -160,17 +171,29 @@ export default function LoginPage() {
             </div>
           </fieldset>
 
-          <div className="flex flex-col gap-1.5">
-            <Label htmlFor="login-phone">Phone number</Label>
-            <Input
-              id="login-phone"
-              type="tel"
-              value={phone}
-              onChange={(event) => setPhone(event.target.value)}
-              placeholder="e.g. 0712 345 678"
-              autoComplete="tel"
-              autoFocus
-            />
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+            <div className="flex flex-col gap-1.5">
+              <Label htmlFor="login-name">Name (optional)</Label>
+              <Input
+                id="login-name"
+                value={name}
+                onChange={(event) => setName(event.target.value)}
+                placeholder="e.g. Amani Wanjiru"
+                autoComplete="name"
+              />
+            </div>
+            <div className="flex flex-col gap-1.5">
+              <Label htmlFor="login-phone">Phone number</Label>
+              <Input
+                id="login-phone"
+                type="tel"
+                value={phone}
+                onChange={(event) => setPhone(event.target.value)}
+                placeholder="e.g. 0712 345 678"
+                autoComplete="tel"
+                autoFocus
+              />
+            </div>
           </div>
 
           <Button type="submit" size="lg" disabled={status === 'submitting'}>
