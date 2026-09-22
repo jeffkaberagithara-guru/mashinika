@@ -54,15 +54,27 @@ GitHub Actions workflows live in `.github/workflows/`:
 
 ## Routes
 
-| Route                 | Purpose                               |
-| --------------------- | ------------------------------------- |
-| `/`                   | Marketing home                        |
-| `/services`           | All services                          |
-| `/services/[slug]`    | Individual service detail             |
-| `/request`            | 3-step rescue request wizard          |
-| `/request/[id]`       | Live tracking for a rescue request    |
-| `/customer`           | "My rescues" dashboard                |
-| `/customer/emergency` | Emergency request form                |
-| `/academy`            | Training & certification              |
-| `/technician`         | Become-a-technician landing           |
-| `/technician/console` | Demo dispatch console for technicians |
+| Route                            | Purpose                                       |
+| -------------------------------- | --------------------------------------------- |
+| `/`                              | Marketing home                                |
+| `/services`                      | All services                                  |
+| `/services/[slug]`               | Individual service detail                      |
+| `/about`                         | Company / mission page                        |
+| `/academy`                       | Training & certification                       |
+| `/buy`                           | Buy-a-car marketplace                          |
+| `/buy/[id]`                      | Individual car listing detail                  |
+| `/care`                          | Routine care bookings                          |
+| `/contact`                       | Contact / demo-labelled phone                  |
+| `/customer`                      | "My dashboard" overview                        |
+| `/customer/emergency`            | Emergency request form                         |
+| `/customer/garage`               | Customer garage                              |
+| `/fleet`                         | Fleet overview                                 |
+| `/inspect`                       | Order an inspection                            |
+| `/login`                         | Sign in                                        |
+| `/request`                       | 3-step rescue request wizard                   |
+| `/request/[id]`                  | Live tracking for a rescue request             |
+| `/rescue`                        | Live rescue map                                |
+| `/technician`                    | Become-a-technician landing                    |
+| `/technician/console`            | Technician sign-in / dashboard                 |
+| `/trade`                         | Sell / trade-in your car                       |
+| `/admin`                         | Admin console                                  |
