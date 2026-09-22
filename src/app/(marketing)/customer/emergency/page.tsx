@@ -1,7 +1,8 @@
 import type { Metadata } from 'next'
 import { PhoneCall, Siren } from 'lucide-react'
-import { RequestForm } from '@/components/request/request-form'
+import { RescueWizard } from '@/features/request/components/rescue-wizard'
 import { StatusBadge } from '@/components/ui/status-badge'
+import { serviceConfig } from '@/config/marketing'
 
 export const metadata: Metadata = {
   title: 'Emergency',
@@ -37,10 +38,10 @@ export default function EmergencyPage() {
               <span className="text-muted-foreground text-sm">
                 Call the rescue line:{' '}
                 <a
-                  href="tel:+254700000000"
+                  href={serviceConfig.emergencyPhoneHref}
                   className="text-primary font-medium"
                 >
-                  +254 700 000 000
+                  {serviceConfig.emergencyPhone}
                 </a>
               </span>
             </div>
@@ -60,7 +61,7 @@ export default function EmergencyPage() {
         </div>
 
         <div className="lg:col-span-6 lg:col-start-7">
-          <RequestForm mode="emergency" defaultServiceType="rescue" />
+          <RescueWizard />
         </div>
       </section>
     </div>
