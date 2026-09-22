@@ -21,6 +21,8 @@ import {
   type CareServiceKind,
 } from '@/features/care/store'
 import { useNotificationsStore } from '@/features/notifications/store'
+import { useGarageStore } from '@/features/garage/store'
+import { useSessionStore } from '@/features/authentication/store'
 import { cn } from 'cn'
 
 const kindOrder: CareServiceKind[] = ['maintenance', 'repair', 'detailing']
@@ -40,6 +42,8 @@ export function CareBooking() {
   const bookings = useCareStore((state) => state.bookings)
   const bookCare = useCareStore((state) => state.bookCare)
   const setBookingStatus = useCareStore((state) => state.setBookingStatus)
+  const garageVehicles = useGarageStore((state) => state.vehicles)
+  const sessionUser = useSessionStore((state) => state.user)
 
   const [kind, setKind] = React.useState<CareServiceKind>('maintenance')
   const [registration, setRegistration] = React.useState('')
@@ -47,10 +51,21 @@ export function CareBooking() {
   const [locationLabel, setLocationLabel] = React.useState('')
   const [date, setDate] = React.useState('')
   const [timeSlot, setTimeSlot] = React.useState(CARE_TIME_SLOTS[0])
-  const [phone, setPhone] = React.useState('')
+  const [phone, setPhone] = React.useState(() => sessionUser?.phone ?? '')
   const [notes, setNotes] = React.useState('')
   const [submitting, setSubmitting] = React.useState(false)
   const [armedCancel, setArmedCancel] = React.useState<string | null>(null)
+
+  const savedVehicles = Object.values(garageVehicles).sort((a, b) =>
+    a.createdAt.localeCompare(b.createdAt),
+  )
+
+  function applySavedVehicle(vehicleId: string) {
+    const vehicle = garageVehicles[vehicleId]
+    if (!vehicle) return
+    setVehicleLabel([vehicle.make, vehicle.model].filter(Boolean).join(' '))
+    setRegistration(vehicle.registration)
+  }
 
   function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault()
@@ -161,6 +176,33 @@ export function CareBooking() {
             })}
           </div>
         </fieldset>
+
+        {savedVehicles.length > 0 ? (
+          <fieldset className="flex flex-col gap-2">
+            <legend className="text-muted-foreground text-xs font-medium tracking-wide uppercase">
+              Pick a saved vehicle
+            </legend>
+            <div className="flex flex-wrap gap-1.5">
+              {savedVehicles.map((vehicle) => (
+                <button
+                  key={vehicle.id}
+                  type="button"
+                  onClick={() => applySavedVehicle(vehicle.id)}
+                  aria-pressed={
+                    registration === vehicle.registration &&
+                    vehicleLabel ===
+                      [vehicle.make, vehicle.model].filter(Boolean).join(' ')
+                  }
+                  className="border-border text-muted-foreground rounded-full border px-3 py-1.5 text-xs font-medium transition-colors hover:border-primary hover:text-primary"
+                >
+                  {[vehicle.make, vehicle.model].filter(Boolean).join(' ') ||
+                    'Vehicle'}{' '}
+                  {vehicle.registration ? `· ${vehicle.registration}` : ''}
+                </button>
+              ))}
+            </div>
+          </fieldset>
+        ) : null}
 
         <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
           <div className="flex flex-col gap-1.5">
