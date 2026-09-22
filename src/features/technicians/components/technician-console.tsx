@@ -2,10 +2,19 @@
 
 import * as React from 'react'
 import Link from 'next/link'
-import { BadgeCheck, MapPin, Star, UserRound, Wrench } from 'lucide-react'
+import {
+  BadgeCheck,
+  MapPin,
+  Star,
+  UserRound,
+  Wallet,
+  Wrench,
+} from 'lucide-react'
 import { useRequestsStore } from '@/features/requests/store'
+import { useNotificationsStore } from '@/features/notifications/store'
 import { demoTechnicians } from '@/features/technicians/data'
 import { getServiceBySlug } from '@/config/services'
+import { formatKsh } from '@/features/request/simulation'
 import { Button } from '@/components/ui/button'
 import { StatusBadge } from '@/components/ui/status-badge'
 import { cn } from 'cn'
@@ -42,6 +51,15 @@ export function TechnicianConsole({ technicianId }: TechnicianConsoleProps) {
       request.technicianId === technicianId &&
       !['COMPLETED', 'CANCELLED'].includes(request.status),
   )
+
+  const earnings = Object.values(requests)
+    .filter(
+      (request) =>
+        request.technicianId === technicianId &&
+        request.quoteAmount &&
+        request.quoteApprovedAt,
+    )
+    .reduce((sum, request) => sum + (request.quoteAmount ?? 0), 0)
 
   const accept = useRequestsStore((state) => state.acceptRequest)
 
@@ -114,6 +132,23 @@ export function TechnicianConsole({ technicianId }: TechnicianConsoleProps) {
                           <MapPin className="size-3" aria-hidden="true" />
                           {timeAgo(request.createdAt)}
                         </p>
+                        {request.photos?.length ? (
+                          <div className="flex items-center gap-1.5 pt-0.5">
+                            {request.photos.slice(0, 4).map((src, index) => (
+                              <span
+                                key={src}
+                                className="border-border relative size-10 overflow-hidden rounded-md border"
+                              >
+                                {/* eslint-disable-next-line @next/next/no-img-element */}
+                                <img
+                                  src={src}
+                                  alt={`Vehicle photo ${index + 1}`}
+                                  className="size-full object-cover"
+                                />
+                              </span>
+                            ))}
+                          </div>
+                        ) : null}
                       </div>
                     </div>
 
@@ -122,6 +157,12 @@ export function TechnicianConsole({ technicianId }: TechnicianConsoleProps) {
                         onClick={() => {
                           if (!technicianId) return
                           accept(request.id, technicianId)
+                          useNotificationsStore.getState().notify({
+                            kind: 'rescue',
+                            title: 'Job accepted',
+                            body: `${request.locationLabel} — you are now responsible for this rescue.`,
+                            href: `/request/${request.id}`,
+                          })
                         }}
                         disabled={!technicianId}
                       >
@@ -190,6 +231,20 @@ export function TechnicianConsole({ technicianId }: TechnicianConsoleProps) {
                 })}
               </div>
             )}
+          </div>
+
+          <div className="border-border bg-card flex items-center gap-4 rounded-xl border p-5 shadow-sm">
+            <span className="bg-success/10 text-success flex size-11 shrink-0 items-center justify-center rounded-lg">
+              <Wallet className="size-5" aria-hidden="true" />
+            </span>
+            <div className="flex flex-col">
+              <p className="text-foreground text-xl font-semibold tracking-tight">
+                {technicianId ? formatKsh(earnings) : '—'}
+              </p>
+              <p className="text-muted-foreground text-xs">
+                Confirmed earnings from approved quotes
+              </p>
+            </div>
           </div>
 
           <div className="border-border bg-card rounded-xl border p-6 shadow-sm">
