@@ -15,6 +15,7 @@ import {
 } from '@/components/ui/dropdown-menu'
 import { Avatar, AvatarFallback } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'
+import { useMounted } from '@/hooks/use-mounted'
 import {
   sessionHome,
   SESSION_ROLE_LABELS,
@@ -33,11 +34,12 @@ function initials(name: string): string {
 
 export function UserMenu() {
   const router = useRouter()
+  const mounted = useMounted()
   const user = useSessionStore((state) => state.user)
   const signOut = useSessionStore((state) => state.signOut)
   const [open, setOpen] = React.useState(false)
 
-  if (!user) {
+  if (!mounted || !user) {
     return (
       <Button
         variant="ghost"
@@ -106,7 +108,7 @@ export function UserMenu() {
           My dashboard
         </DropdownMenuItem>
         <DropdownMenuItemSignOut
-          onSelect={() => handleSignOut()}
+          onClick={() => handleSignOut()}
           label="Sign out"
         />
       </DropdownMenuContent>
@@ -115,14 +117,14 @@ export function UserMenu() {
 }
 
 function DropdownMenuItemSignOut({
-  onSelect,
+  onClick,
   label,
 }: {
-  onSelect: () => void
+  onClick: () => void
   label: string
 }) {
   return (
-    <DropdownMenuItem variant="destructive" onSelect={onSelect}>
+    <DropdownMenuItem variant="destructive" onClick={onClick}>
       <LogOut className="size-4" aria-hidden="true" />
       {label}
     </DropdownMenuItem>

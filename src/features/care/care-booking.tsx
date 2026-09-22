@@ -23,6 +23,7 @@ import {
 import { useNotificationsStore } from '@/features/notifications/store'
 import { useGarageStore } from '@/features/garage/store'
 import { useSessionStore } from '@/features/authentication/store'
+import { useMounted } from '@/hooks/use-mounted'
 import { cn } from 'cn'
 
 const kindOrder: CareServiceKind[] = ['maintenance', 'repair', 'detailing']
@@ -39,6 +40,7 @@ function formatDate(iso: string): string {
 }
 
 export function CareBooking() {
+  const mounted = useMounted()
   const bookings = useCareStore((state) => state.bookings)
   const bookCare = useCareStore((state) => state.bookCare)
   const setBookingStatus = useCareStore((state) => state.setBookingStatus)
@@ -51,14 +53,18 @@ export function CareBooking() {
   const [locationLabel, setLocationLabel] = React.useState('')
   const [date, setDate] = React.useState('')
   const [timeSlot, setTimeSlot] = React.useState(CARE_TIME_SLOTS[0])
-  const [phone, setPhone] = React.useState(() => sessionUser?.phone ?? '')
+  const [phone, setPhone] = React.useState('')
   const [notes, setNotes] = React.useState('')
   const [submitting, setSubmitting] = React.useState(false)
   const [armedCancel, setArmedCancel] = React.useState<string | null>(null)
 
-  const savedVehicles = Object.values(garageVehicles).sort((a, b) =>
-    a.createdAt.localeCompare(b.createdAt),
-  )
+  const effectivePhone = phone || (mounted ? (sessionUser?.phone ?? '') : '')
+
+  const savedVehicles = mounted
+    ? Object.values(garageVehicles).sort((a, b) =>
+        a.createdAt.localeCompare(b.createdAt),
+      )
+    : []
 
   function applySavedVehicle(vehicleId: string) {
     const vehicle = garageVehicles[vehicleId]
@@ -81,7 +87,7 @@ export function CareBooking() {
       toast.error('Pick a day for the booking.')
       return
     }
-    if (!phone.trim()) {
+    if (!effectivePhone.trim()) {
       toast.error('Add a phone number for the confirmation.')
       return
     }
@@ -94,7 +100,7 @@ export function CareBooking() {
         locationLabel: locationLabel.trim(),
         date,
         timeSlot,
-        phone: phone.trim(),
+        phone: effectivePhone.trim(),
         notes: notes.trim(),
       })
       setSubmitting(false)
@@ -240,7 +246,7 @@ export function CareBooking() {
             <Label htmlFor="care-phone">Phone number</Label>
             <Input
               id="care-phone"
-              value={phone}
+              value={effectivePhone}
               onChange={(event) => setPhone(event.target.value)}
               placeholder="0712 345 678"
               inputMode="tel"

@@ -24,6 +24,7 @@ import {
 } from '@/features/garage/store'
 import { useRequestsStore } from '@/features/requests/store'
 import type { RescueRequest } from '@/features/requests/store'
+import { useMounted } from '@/hooks/use-mounted'
 import { SERVICE_REQUEST_STATUS_CONFIG } from '@/features/roadside/status'
 import { getServiceBySlug } from '@/config/services'
 import { StatusBadge } from '@/components/ui/status-badge'
@@ -60,7 +61,8 @@ function matchesVehicle(
 }
 
 export function GarageDashboard() {
-  const vehicles = useGarageStore(
+  const mounted = useMounted()
+  const storeVehicles = useGarageStore(
     useShallow((state) =>
       Object.values(state.vehicles).sort((a, b) =>
         a.createdAt.localeCompare(b.createdAt),
@@ -71,13 +73,16 @@ export function GarageDashboard() {
   const updateVehicle = useGarageStore((state) => state.updateVehicle)
   const removeVehicle = useGarageStore((state) => state.removeVehicle)
 
-  const requests = useRequestsStore(
+  const storeRequests = useRequestsStore(
     useShallow((state) =>
       Object.values(state.requests).sort((a, b) =>
         b.createdAt.localeCompare(a.createdAt),
       ),
     ),
   )
+
+  const vehicles = mounted ? storeVehicles : []
+  const requests = mounted ? storeRequests : []
 
   const [selectedId, setSelectedId] = React.useState<string | null>(null)
   const [editingId, setEditingId] = React.useState<string | null>(null)

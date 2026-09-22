@@ -18,6 +18,7 @@ import {
   useSessionStore,
   type SessionRole,
 } from '@/features/authentication/store'
+import { useMounted } from '@/hooks/use-mounted'
 
 type NavItem = {
   label: string
@@ -51,7 +52,9 @@ const roleTrail: Record<SessionRole, NavItem> = {
 
 export function MobileNav() {
   const pathname = usePathname()
-  const user = useSessionStore((state) => state.user)
+  const mounted = useMounted()
+  const storeUser = useSessionStore((state) => state.user)
+  const user = mounted ? storeUser : null
   const trail = user ? roleTrail[user.role] : roleTrail.customer
   const academy = { label: 'Academy', href: '/academy', icon: GraduationCap }
 

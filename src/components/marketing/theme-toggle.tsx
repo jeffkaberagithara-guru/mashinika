@@ -4,15 +4,7 @@ import * as React from 'react'
 import { Moon, Sun } from 'lucide-react'
 import { useTheme } from 'next-themes'
 import { Button } from '@/components/ui/button'
-
-function useMounted() {
-  const subscribe = React.useCallback(() => () => {}, [])
-  return React.useSyncExternalStore(
-    subscribe,
-    () => true,
-    () => false,
-  )
-}
+import { useMounted } from '@/hooks/use-mounted'
 
 export function ThemeToggle() {
   const { resolvedTheme, setTheme } = useTheme()

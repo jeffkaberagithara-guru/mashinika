@@ -24,6 +24,7 @@ import {
   type InspectionPackage,
 } from '@/features/inspect/store'
 import { useGarageStore } from '@/features/garage/store'
+import { useMounted } from '@/hooks/use-mounted'
 import { cn } from 'cn'
 
 const packageOrder: InspectionPackage[] = ['basic', 'standard', 'premium']
@@ -33,6 +34,7 @@ function formatKsh(value: number): string {
 }
 
 export function InspectBooking() {
+  const mounted = useMounted()
   const reports = useInspectionsStore((state) => state.reports)
   const bookInspection = useInspectionsStore((state) => state.bookInspection)
   const removeReport = useInspectionsStore((state) => state.removeReport)
@@ -46,9 +48,11 @@ export function InspectBooking() {
   const [submitting, setSubmitting] = React.useState(false)
   const [armedDelete, setArmedDelete] = React.useState<string | null>(null)
 
-  const savedVehicles = Object.values(garageVehicles).sort((a, b) =>
-    a.createdAt.localeCompare(b.createdAt),
-  )
+  const savedVehicles = mounted
+    ? Object.values(garageVehicles).sort((a, b) =>
+        a.createdAt.localeCompare(b.createdAt),
+      )
+    : []
 
   function applySavedVehicle(vehicleId: string) {
     const vehicle = garageVehicles[vehicleId]

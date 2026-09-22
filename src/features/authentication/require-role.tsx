@@ -2,6 +2,7 @@
 
 import * as React from 'react'
 import { useRouter } from 'next/navigation'
+import { useMounted } from '@/hooks/use-mounted'
 import {
   sessionHome,
   useSessionStore,
@@ -15,8 +16,10 @@ import {
  * - Wrong role  -> their own home
  * - Correct     -> renders children
  *
- * Navigation happens in an effect (an external-system sync, not a state
- * update) and unauthorized content is never rendered.
+ * Renders nothing until the client has mounted so the static prerender
+ * (empty session) matches the first client render, avoiding hydration
+ * mismatches. Navigation happens in an effect (an external-system sync,
+ * not a state update) and unauthorized content is never rendered.
  */
 export function RequireRole({
   allowed,
@@ -26,19 +29,23 @@ export function RequireRole({
   children: React.ReactNode
 }) {
   const router = useRouter()
+  const mounted = useMounted()
   const user = useSessionStore((state) => state.user)
 
-  const permitted = user !== null && allowed.includes(user.role)
+  const allowedKey = allowed.join(',')
+  const permitted =
+    mounted && user !== null && allowedKey.includes(user.role)
 
   React.useEffect(() => {
+    if (!mounted) return
     if (!user) {
       router.replace('/login')
       return
     }
-    if (!allowed.includes(user.role)) {
+    if (!allowedKey.includes(user.role)) {
       router.replace(sessionHome(user.role))
     }
-  }, [user, allowed, router])
+  }, [mounted, user, allowedKey, router])
 
   if (!permitted) return null
   return <>{children}</>

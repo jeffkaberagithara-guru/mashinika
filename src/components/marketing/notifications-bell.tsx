@@ -7,6 +7,7 @@ import { Bell, CheckCheck, LifeBuoy, Wallet, Info } from 'lucide-react'
 import { useNotificationsStore } from '@/features/notifications/store'
 import { sessionHome, useSessionStore } from '@/features/authentication/store'
 import { Button } from '@/components/ui/button'
+import { useMounted } from '@/hooks/use-mounted'
 import { cn } from 'cn'
 
 const kindIcon = {
@@ -37,11 +38,15 @@ function timeAgo(iso: string): string {
 
 export function NotificationsBell() {
   const router = useRouter()
-  const user = useSessionStore((state) => state.user)
-  const items = useNotificationsStore((state) => state.items)
+  const mounted = useMounted()
+  const storeUser = useSessionStore((state) => state.user)
+  const storeItems = useNotificationsStore((state) => state.items)
   const markRead = useNotificationsStore((state) => state.markRead)
   const markAllRead = useNotificationsStore((state) => state.markAllRead)
   const [open, setOpen] = React.useState(false)
+
+  const user = mounted ? storeUser : null
+  const items = mounted ? storeItems : []
 
   const unread = items.filter((item) => !item.read).length
   const home = user ? sessionHome(user.role) : '/login'
