@@ -14,58 +14,14 @@ import {
 } from '@/components/ui/sheet'
 import { siteConfig } from '@/config/site'
 import { ThemeToggle } from '@/components/marketing/theme-toggle'
-
-const navItems = [
-  { label: 'Services', href: '/services' },
-  { label: 'Rescue', href: '/customer/emergency' },
-  { label: 'Academy', href: '/academy' },
-  { label: 'Technicians', href: '/technician' },
-  { label: 'Dispatch console', href: '/technician/console' },
-]
-
-const mobileLinks = [
-  {
-    label: 'Services',
-    href: '/services',
-    description: 'Rescue, diagnostics, towing and more',
-  },
-  {
-    label: 'Emergency help',
-    href: '/customer/emergency',
-    description: 'Help in minutes, 24/7',
-  },
-  {
-    label: 'My rescues',
-    href: '/customer',
-    description: 'Track your active and past requests',
-  },
-  {
-    label: 'Academy',
-    href: '/academy',
-    description: 'Courses for owners and technicians',
-  },
-  {
-    label: 'Become a technician',
-    href: '/technician',
-    description: 'Join the vetted network',
-  },
-  {
-    label: 'Dispatch console',
-    href: '/technician/console',
-    description: 'Accept rescue jobs live',
-  },
-  {
-    label: 'Fleet management',
-    href: '/services/fleet',
-    description: 'Servicing for business fleets',
-  },
-]
+import { NotificationsBell } from '@/components/marketing/notifications-bell'
+import { cn } from 'cn'
 
 export function SiteHeader() {
   const [open, setOpen] = React.useState(false)
 
   return (
-    <header className="bg-background/80 border-border sticky top-0 z-50 border-b backdrop-blur-sm">
+    <header className="bg-background/80 border-border z-sticky sticky top-0 border-b backdrop-blur-sm">
       <div className="mx-auto flex h-16 w-full max-w-7xl items-center justify-between gap-3 px-4 sm:px-6 lg:px-8">
         <Link
           href="/"
@@ -80,12 +36,18 @@ export function SiteHeader() {
           </span>
         </Link>
 
-        <nav className="hidden items-center gap-1 lg:flex" aria-label="Primary">
-          {navItems.map((item) => (
+        <nav
+          className="hidden items-center gap-0.5 lg:flex"
+          aria-label="Primary"
+        >
+          {siteConfig.nav.map((item, index) => (
             <Link
               key={item.href}
               href={item.href}
-              className="text-muted-foreground hover:bg-muted hover:text-foreground rounded-lg px-3 py-2 text-sm font-medium transition-colors"
+              className={cn(
+                'text-muted-foreground hover:bg-muted hover:text-foreground rounded-lg px-3 py-2 text-sm font-medium transition-colors',
+                index < 5 ? 'lg:block' : 'hidden xl:block',
+              )}
             >
               {item.label}
             </Link>
@@ -93,23 +55,24 @@ export function SiteHeader() {
         </nav>
 
         <div className="flex items-center gap-1.5 sm:gap-2">
+          <NotificationsBell />
           <ThemeToggle />
 
           <Button
             variant="ghost"
             size="sm"
-            className="hidden xl:inline-flex"
-            render={<Link href="/customer" />}
+            className="hidden min-[480px]:inline-flex"
+            render={<Link href={siteConfig.login.href} />}
           >
-            My rescues
+            {siteConfig.login.label}
           </Button>
 
           <Button
             size="sm"
             className="hidden min-[400px]:inline-flex"
-            render={<Link href="/request" />}
+            render={<Link href={siteConfig.cta.getHelpHref} />}
           >
-            Get help now
+            {siteConfig.cta.getHelpLabel}
           </Button>
 
           <Sheet open={open} onOpenChange={setOpen}>
@@ -139,20 +102,15 @@ export function SiteHeader() {
               </SheetHeader>
 
               <nav className="flex flex-col gap-1 px-2" aria-label="Mobile">
-                {mobileLinks.map((link) => (
+                {siteConfig.nav.map((link) => (
                   <Link
                     key={link.href}
                     href={link.href}
                     onClick={() => setOpen(false)}
                     className="hover:bg-muted flex items-center justify-between gap-3 rounded-lg px-3 py-3 transition-colors"
                   >
-                    <span className="flex flex-col gap-0.5">
-                      <span className="text-foreground text-sm font-medium">
-                        {link.label}
-                      </span>
-                      <span className="text-muted-foreground text-xs">
-                        {link.description}
-                      </span>
+                    <span className="text-foreground text-sm font-medium">
+                      {link.label}
                     </span>
                     <ChevronRight
                       className="text-muted-foreground size-4 shrink-0"
@@ -160,11 +118,40 @@ export function SiteHeader() {
                     />
                   </Link>
                 ))}
+                <Link
+                  href="/customer"
+                  onClick={() => setOpen(false)}
+                  className="hover:bg-muted flex items-center justify-between gap-3 rounded-lg px-3 py-3 transition-colors"
+                >
+                  <span className="text-foreground text-sm font-medium">
+                    My rescues
+                  </span>
+                  <ChevronRight
+                    className="text-muted-foreground size-4 shrink-0"
+                    aria-hidden="true"
+                  />
+                </Link>
+                <Link
+                  href="/technician"
+                  onClick={() => setOpen(false)}
+                  className="hover:bg-muted flex items-center justify-between gap-3 rounded-lg px-3 py-3 transition-colors"
+                >
+                  <span className="text-foreground text-sm font-medium">
+                    Join as a technician
+                  </span>
+                  <ChevronRight
+                    className="text-muted-foreground size-4 shrink-0"
+                    aria-hidden="true"
+                  />
+                </Link>
               </nav>
 
               <div className="mt-auto flex flex-col gap-2 border-t px-2 pt-4 pb-2">
-                <Button size="lg" render={<Link href="/request" />}>
-                  Get help now
+                <Button
+                  size="lg"
+                  render={<Link href={siteConfig.cta.getHelpHref} />}
+                >
+                  {siteConfig.cta.getHelpLabel}
                   <ChevronRight className="size-4" aria-hidden="true" />
                 </Button>
                 <Button

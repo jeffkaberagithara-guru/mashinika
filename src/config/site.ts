@@ -75,6 +75,20 @@ export const siteConfig = {
     getHelpLabel: 'GET HELP NOW',
     getHelpHref: '/customer/emergency',
   },
+  login: {
+    label: 'Login',
+    href: '/login',
+  },
+  nav: [
+    { label: 'Services', href: '/services' },
+    { label: 'Rescue', href: '/rescue' },
+    { label: 'Care', href: '/care' },
+    { label: 'Inspect', href: '/inspect' },
+    { label: 'Buy', href: '/buy' },
+    { label: 'Trade', href: '/trade' },
+    { label: 'Fleet', href: '/fleet' },
+    { label: 'Academy', href: '/academy' },
+  ],
 }
 
 export type SiteConfig = typeof siteConfig
