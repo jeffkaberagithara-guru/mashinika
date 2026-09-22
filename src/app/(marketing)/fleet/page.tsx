@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import Link from 'next/link'
 import { Wrench } from 'lucide-react'
 import { FleetDashboard } from '@/features/fleet/fleet-dashboard'
+import { RequireRole } from '@/features/authentication/require-role'
 import { Button } from '@/components/ui/button'
 import { StatusBadge } from '@/components/ui/status-badge'
 import { serviceConfig } from '@/config/marketing'
@@ -52,7 +53,9 @@ export default function FleetPage() {
         </div>
       </section>
 
-      <FleetDashboard />
+      <RequireRole allowed={['fleet']}>
+        <FleetDashboard />
+      </RequireRole>
     </div>
   )
 }

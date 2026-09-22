@@ -1,6 +1,6 @@
 import type { Metadata } from 'next'
 import { TechnicianConsole } from '@/features/technicians/components/technician-console'
-import { demoTechnicians } from '@/features/technicians/data'
+import { RequireRole } from '@/features/authentication/require-role'
 
 export const metadata: Metadata = {
   title: 'Dispatch console',
@@ -16,6 +16,9 @@ export default async function TechnicianConsolePage({
   searchParams,
 }: TechnicianConsolePageProps) {
   const { tech } = await searchParams
-  const technicianId = tech ?? demoTechnicians[0]?.id ?? null
-  return <TechnicianConsole technicianId={technicianId} />
+  return (
+    <RequireRole allowed={['technician', 'dispatcher']}>
+      <TechnicianConsole techParam={tech} />
+    </RequireRole>
+  )
 }

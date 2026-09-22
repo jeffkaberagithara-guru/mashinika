@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import { CustomerDashboard } from '@/features/customer/customer-dashboard'
+import { RequireRole } from '@/features/authentication/require-role'
 
 export const metadata: Metadata = {
   title: 'My rescues',
@@ -7,5 +8,9 @@ export const metadata: Metadata = {
 }
 
 export default function CustomerPage() {
-  return <CustomerDashboard />
+  return (
+    <RequireRole allowed={['customer']}>
+      <CustomerDashboard />
+    </RequireRole>
+  )
 }

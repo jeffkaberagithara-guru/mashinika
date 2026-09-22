@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import { AdminConsole } from '@/features/admin/admin-console'
+import { RequireRole } from '@/features/authentication/require-role'
 import { siteConfig } from '@/config/site'
 
 export const metadata: Metadata = {
@@ -27,7 +28,9 @@ export default function AdminPage() {
           }),
         }}
       />
-      <AdminConsole />
+      <RequireRole allowed={['dispatcher']}>
+        <AdminConsole />
+      </RequireRole>
     </>
   )
 }
