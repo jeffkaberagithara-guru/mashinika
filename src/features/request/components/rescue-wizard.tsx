@@ -3,17 +3,25 @@
 import * as React from 'react'
 import { useRouter } from 'next/navigation'
 import {
-  Activity,
+  BatteryCharging,
   Car,
   ChevronLeft,
   ChevronRight,
-  LifeBuoy,
+  Disc3,
+  Fuel,
+  ImagePlus,
+  KeyRound,
   Loader2,
   MapPin,
+  Navigation,
   PhoneCall,
+  PlugZap,
+  Thermometer,
   Truck,
   UserRound,
   Wrench,
+  X,
+  type LucideIcon,
 } from 'lucide-react'
 import { cn } from 'cn'
 import { toast } from 'sonner'
@@ -22,48 +30,89 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
 import { useRequestsStore } from '@/features/requests/store'
+import { useNotificationsStore } from '@/features/notifications/store'
 import { getServiceBySlug } from '@/config/services'
 
-const problemOptions = [
-  {
-    slug: 'roadside',
-    icon: LifeBuoy,
-    title: 'Breakdown / emergency',
-    detail: 'Battery, tyre, fuel, keys or a breakdown right now.',
-  },
-  {
-    slug: 'diagnostics',
-    icon: Activity,
-    title: 'Diagnose a fault',
-    detail: 'Warning light, strange noise, or a pre-service check.',
-  },
+type ProblemOption = {
+  slug: string
+  icon: LucideIcon
+  title: string
+  detail: string
+}
+
+const problemOptions: ProblemOption[] = [
   {
     slug: 'towing',
     icon: Truck,
-    title: 'Towing & recovery',
-    detail: "The car can't be driven and needs a flatbed.",
+    title: 'Accident / needs towing',
+    detail: "Damaged or can't be driven — a flatbed is on its way.",
   },
   {
-    slug: 'care',
+    slug: 'roadside',
+    icon: BatteryCharging,
+    title: 'Dead battery',
+    detail: "Clicking sound or won't crank — may need a jump.",
+  },
+  {
+    slug: 'roadside',
+    icon: Disc3,
+    title: 'Flat tyre',
+    detail: 'Puncture, blowout or a wheel that needs changing.',
+  },
+  {
+    slug: 'roadside',
+    icon: Fuel,
+    title: 'Out of fuel',
+    detail: 'Ran dry — we can bring fuel to you.',
+  },
+  {
+    slug: 'roadside',
+    icon: KeyRound,
+    title: 'Locked out / keys',
+    detail: 'Keys lost, broken or stuck inside the car.',
+  },
+  {
+    slug: 'roadside',
+    icon: PlugZap,
+    title: "Won't start",
+    detail: 'Nothing happens when you turn the key or press start.',
+  },
+  {
+    slug: 'roadside',
+    icon: Thermometer,
+    title: 'Overheating',
+    detail: 'Temperature rising, steam or a hot smell from the engine.',
+  },
+  {
+    slug: 'roadside',
     icon: Wrench,
-    title: 'Servicing & repairs',
-    detail: 'Routine maintenance or a repair you can schedule.',
+    title: 'Something else',
+    detail: 'Another breakdown — describe it in the next step.',
   },
 ]
 
-const stepLabels = ['Problem', 'Vehicle & location', 'Confirm']
+const stepLabels = ['Help', 'Location', 'Vehicle', 'Details', 'Review']
+
+const maxPhotos = 4
 
 export function RescueWizard() {
   const router = useRouter()
   const createRequest = useRequestsStore((state) => state.createRequest)
+  const photoInputRef = React.useRef<HTMLInputElement>(null)
 
   const [step, setStep] = React.useState(0)
-  const [serviceType, setServiceType] = React.useState<string>('roadside')
+  const [serviceType, setServiceType] = React.useState<string>('')
   const [registration, setRegistration] = React.useState('')
   const [make, setMake] = React.useState('')
   const [model, setModel] = React.useState('')
   const [locationLabel, setLocationLabel] = React.useState('')
+  const [coordinates, setCoordinates] = React.useState<{
+    lat: number
+    lng: number
+  } | null>(null)
+  const [locating, setLocating] = React.useState(false)
   const [issue, setIssue] = React.useState('')
+  const [photos, setPhotos] = React.useState<string[]>([])
   const [name, setName] = React.useState('')
   const [phone, setPhone] = React.useState('')
   const [urgent, setUrgent] = React.useState(false)
@@ -71,24 +120,69 @@ export function RescueWizard() {
   const [submitting, setSubmitting] = React.useState(false)
 
   const stepValid = [
-    serviceType.trim() !== '',
+    serviceType !== '',
     locationLabel.trim() !== '',
+    registration.trim() !== '' || (make.trim() !== '' && model.trim() !== ''),
+    true,
     name.trim() !== '' && phone.trim() !== '',
   ]
+
+  const stepError = [
+    'Pick the problem you need help with',
+    'Tell us where the vehicle is — or use your location',
+    'Add the registration, or the make and model',
+    null,
+    'Add a name and phone number so we can reach you',
+  ]
+
+  function handleLocate() {
+    if (!('geolocation' in navigator)) {
+      toast.error('Location is not available on this device — type it instead')
+      return
+    }
+    setLocating(true)
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        const lat = position.coords.latitude
+        const lng = position.coords.longitude
+        setCoordinates({ lat, lng })
+        setLocationLabel(
+          `My current location — ${lat.toFixed(4)}, ${lng.toFixed(4)}`,
+        )
+        setLocating(false)
+        toast.success('Location captured — you can still edit it')
+      },
+      () => {
+        setLocating(false)
+        toast.error('Could not get your location — type it instead')
+      },
+      { enableHighAccuracy: true, timeout: 10000 },
+    )
+  }
+
+  function handleFiles(event: React.ChangeEvent<HTMLInputElement>) {
+    const files = Array.from(event.target.files ?? [])
+    const room = maxPhotos - photos.length
+    const next = [
+      ...photos,
+      ...files.slice(0, room).map((file) => URL.createObjectURL(file)),
+    ]
+    setPhotos(next.slice(0, maxPhotos))
+    event.target.value = ''
+  }
+
+  function removePhoto(index: number) {
+    setPhotos((current) => current.filter((_, i) => i !== index))
+  }
 
   function handleNext() {
     setTried(true)
     if (!stepValid[step]) {
-      toast.error(
-        step === 0
-          ? 'Pick the type of help you need'
-          : step === 1
-            ? 'Tell us where the vehicle is'
-            : 'Add your name and phone number',
-      )
+      const message = stepError[step]
+      if (message) toast.error(message)
       return
     }
-    if (step < 2) {
+    if (step < stepLabels.length - 1) {
       setStep(step + 1)
       setTried(false)
       return
@@ -116,8 +210,18 @@ export function RescueWizard() {
         locationLabel: locationLabel.trim(),
         issue: issue.trim(),
         priority: urgent ? 'URGENT' : 'NORMAL',
+        photos: photos.length ? photos : undefined,
+        coordinates,
       })
-      toast.success('Request created — tracking your rescue.')
+      toast.success('Request sent — tracking your rescue.')
+      useNotificationsStore.getState().notify({
+        kind: 'rescue',
+        title: 'Rescue request sent',
+        body: urgent
+          ? 'Marked urgent — we are prioritising the nearest technician.'
+          : 'We are finding the nearest technician now.',
+        href: `/request/${request.id}`,
+      })
       router.push(`/request/${request.id}`)
     }, 700)
   }
@@ -169,7 +273,7 @@ export function RescueWizard() {
                 What&apos;s happening?
               </h2>
               <p className="text-muted-foreground text-sm">
-                Pick the one that fits best — you can add details next.
+                Tap the closest match — you can add details in a moment.
               </p>
             </div>
             <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
@@ -177,7 +281,7 @@ export function RescueWizard() {
                 const selected = serviceType === option.slug
                 return (
                   <button
-                    key={option.slug}
+                    key={option.title}
                     type="button"
                     onClick={() => setServiceType(option.slug)}
                     aria-pressed={selected}
@@ -217,47 +321,31 @@ export function RescueWizard() {
           <div className="flex flex-col gap-4">
             <div className="flex flex-col gap-1">
               <h2 className="text-foreground text-lg font-semibold">
-                Which vehicle, and where?
+                Where are you?
               </h2>
               <p className="text-muted-foreground text-sm">
-                The vehicle details help us dispatch the right technician.
+                The more precise you are, the faster we reach you.
               </p>
             </div>
 
-            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-              <div className="flex flex-col gap-1.5">
-                <Label htmlFor="wizard-registration">Registration</Label>
-                <Input
-                  id="wizard-registration"
-                  value={registration}
-                  onChange={(event) => setRegistration(event.target.value)}
-                  placeholder="e.g. KDE 493M"
-                />
-              </div>
-              <div className="grid grid-cols-2 gap-3">
-                <div className="flex flex-col gap-1.5">
-                  <Label htmlFor="wizard-make">Make</Label>
-                  <Input
-                    id="wizard-make"
-                    value={make}
-                    onChange={(event) => setMake(event.target.value)}
-                    placeholder="e.g. Toyota"
-                  />
-                </div>
-                <div className="flex flex-col gap-1.5">
-                  <Label htmlFor="wizard-model">Model</Label>
-                  <Input
-                    id="wizard-model"
-                    value={model}
-                    onChange={(event) => setModel(event.target.value)}
-                    placeholder="e.g. Axio"
-                  />
-                </div>
-              </div>
-            </div>
+            <Button
+              type="button"
+              variant="outline"
+              size="lg"
+              onClick={handleLocate}
+              disabled={locating}
+              className="justify-start"
+            >
+              {locating ? (
+                <Loader2 className="size-4 animate-spin" aria-hidden="true" />
+              ) : (
+                <Navigation className="size-4" aria-hidden="true" />
+              )}
+              {locating ? 'Detecting…' : 'Use my location'}
+            </Button>
 
             <div className="flex flex-col gap-1.5">
-              <Label htmlFor="wizard-location">Where is the vehicle now?</Label>
+              <Label htmlFor="wizard-location">Location details</Label>
               <div className="relative">
                 <MapPin
                   className="text-muted-foreground pointer-events-none absolute top-1/2 left-2.5 size-4 -translate-y-1/2"
@@ -272,6 +360,79 @@ export function RescueWizard() {
                   aria-invalid={tried && !locationLabel.trim()}
                 />
               </div>
+              {coordinates ? (
+                <p className="text-success flex items-center gap-1.5 text-xs font-medium">
+                  <Navigation className="size-3.5" aria-hidden="true" />
+                  Precise coordinates attached — the technician will see them.
+                </p>
+              ) : null}
+            </div>
+          </div>
+        ) : null}
+
+        {step === 2 ? (
+          <div className="flex flex-col gap-4">
+            <div className="flex flex-col gap-1">
+              <h2 className="text-foreground text-lg font-semibold">
+                Which vehicle?
+              </h2>
+              <p className="text-muted-foreground text-sm">
+                This helps us send the right technician and the right tools.
+              </p>
+            </div>
+
+            <div className="flex flex-col gap-1.5">
+              <Label htmlFor="wizard-registration">Registration</Label>
+              <Input
+                id="wizard-registration"
+                value={registration}
+                onChange={(event) => setRegistration(event.target.value)}
+                placeholder="e.g. KDE 493M"
+                aria-invalid={
+                  tried &&
+                  !registration.trim() &&
+                  !(make.trim() && model.trim())
+                }
+              />
+            </div>
+
+            <div className="grid grid-cols-2 gap-3">
+              <div className="flex flex-col gap-1.5">
+                <Label htmlFor="wizard-make">Make</Label>
+                <Input
+                  id="wizard-make"
+                  value={make}
+                  onChange={(event) => setMake(event.target.value)}
+                  placeholder="e.g. Toyota"
+                />
+              </div>
+              <div className="flex flex-col gap-1.5">
+                <Label htmlFor="wizard-model">Model</Label>
+                <Input
+                  id="wizard-model"
+                  value={model}
+                  onChange={(event) => setModel(event.target.value)}
+                  placeholder="e.g. Axio"
+                />
+              </div>
+            </div>
+
+            <p className="text-muted-foreground text-xs">
+              You&apos;ll be able to save this vehicle to a garage list after
+              the request.
+            </p>
+          </div>
+        ) : null}
+
+        {step === 3 ? (
+          <div className="flex flex-col gap-4">
+            <div className="flex flex-col gap-1">
+              <h2 className="text-foreground text-lg font-semibold">
+                Any more details?
+              </h2>
+              <p className="text-muted-foreground text-sm">
+                Optional — describe the symptoms and add photos if you can.
+              </p>
             </div>
 
             <div className="flex flex-col gap-1.5">
@@ -285,18 +446,70 @@ export function RescueWizard() {
                 placeholder="e.g. Engine cut out at the roundabout, won't start."
               />
             </div>
+
+            <div className="flex flex-col gap-2">
+              <span className="text-foreground text-sm font-medium">
+                Photos ({photos.length}/{maxPhotos}) {''}
+                <span className="text-muted-foreground font-normal">
+                  — helpful for the technician
+                </span>
+              </span>
+              <div className="flex flex-wrap gap-2.5">
+                {photos.map((src, index) => (
+                  <div
+                    key={src}
+                    className="border-border group relative size-20 overflow-hidden rounded-lg border"
+                  >
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                      src={src}
+                      alt={`Attachment ${index + 1}`}
+                      className="size-full object-cover"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => removePhoto(index)}
+                      aria-label={`Remove photo ${index + 1}`}
+                      className="absolute top-1 right-1 flex size-5 items-center justify-center rounded-full bg-slate-950/60 text-white opacity-0 transition-opacity group-hover:opacity-100"
+                    >
+                      <X className="size-3" aria-hidden="true" />
+                    </button>
+                  </div>
+                ))}
+                {photos.length < maxPhotos ? (
+                  <button
+                    type="button"
+                    onClick={() => photoInputRef.current?.click()}
+                    aria-label="Add photos"
+                    className="border-border bg-subtle hover:bg-muted/50 text-muted-foreground flex size-20 flex-col items-center justify-center gap-1 rounded-lg border border-dashed transition-colors"
+                  >
+                    <ImagePlus className="size-5" aria-hidden="true" />
+                    <span className="text-[11px] font-medium">Add</span>
+                  </button>
+                ) : null}
+              </div>
+              <input
+                ref={photoInputRef}
+                type="file"
+                accept="image/*"
+                multiple
+                onChange={handleFiles}
+                className="sr-only"
+                aria-hidden="true"
+                tabIndex={-1}
+              />
+            </div>
           </div>
         ) : null}
 
-        {step === 2 ? (
+        {step === 4 ? (
           <div className="flex flex-col gap-4">
             <div className="flex flex-col gap-1">
               <h2 className="text-foreground text-lg font-semibold">
-                Confirm your request
+                Review & request help
               </h2>
               <p className="text-muted-foreground text-sm">
-                Review the summary below — dispatch works fastest when this is
-                accurate.
+                Dispatch works fastest when this is accurate.
               </p>
             </div>
 
@@ -304,7 +517,7 @@ export function RescueWizard() {
               <div className="flex items-center justify-between gap-3">
                 <span className="text-muted-foreground">Service</span>
                 <span className="text-foreground font-medium">
-                  {getServiceBySlug(serviceType)?.name ?? serviceType}
+                  {getServiceBySlug(serviceType)?.name ?? 'Emergency help'}
                 </span>
               </div>
               <div className="flex items-center justify-between gap-3">
@@ -315,7 +528,7 @@ export function RescueWizard() {
                     '—'}
                 </span>
               </div>
-              <div className="flex items-center justify-between gap-3">
+              <div className="flex items-start justify-between gap-3">
                 <span className="text-muted-foreground">Location</span>
                 <span className="text-foreground max-w-[60%] text-right font-medium">
                   {locationLabel}
@@ -326,6 +539,14 @@ export function RescueWizard() {
                   <span className="text-muted-foreground">Details</span>
                   <span className="text-foreground max-w-[60%] text-right font-medium">
                     {issue}
+                  </span>
+                </div>
+              ) : null}
+              {photos.length ? (
+                <div className="flex items-center justify-between gap-3">
+                  <span className="text-muted-foreground">Photos</span>
+                  <span className="text-foreground font-medium">
+                    {photos.length} attached
                   </span>
                 </div>
               ) : null}
@@ -415,9 +636,9 @@ export function RescueWizard() {
                 <Loader2 className="size-4 animate-spin" aria-hidden="true" />
                 Sending…
               </>
-            ) : step === 2 ? (
+            ) : step === stepLabels.length - 1 ? (
               <>
-                Send request
+                REQUEST HELP
                 <ChevronRight className="size-4" aria-hidden="true" />
               </>
             ) : (

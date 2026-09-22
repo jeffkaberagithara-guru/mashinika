@@ -11,6 +11,11 @@ export type RescueVehicle = {
   registration: string
 }
 
+export type RescueCoordinates = {
+  lat: number
+  lng: number
+}
+
 export type RescueRequest = {
   id: string
   serviceType: string
@@ -21,6 +26,11 @@ export type RescueRequest = {
   vehicle: RescueVehicle
   locationLabel: string
   issue: string
+  photos?: string[]
+  coordinates?: RescueCoordinates | null
+  quoteAmount?: number | null
+  quoteApprovedAt?: string | null
+  quotePaymentMethod?: 'M-Pesa' | null
   technicianId: string | null
   createdAt: string
   updatedAt: string
@@ -34,12 +44,15 @@ export type RescueRequestInput = {
   locationLabel: string
   issue: string
   priority?: 'NORMAL' | 'URGENT'
+  photos?: string[]
+  coordinates?: RescueCoordinates | null
 }
 
 type RequestsStore = {
   requests: Record<string, RescueRequest>
   createRequest: (input: RescueRequestInput) => RescueRequest
   acceptRequest: (id: string, technicianId: string) => void
+  approveQuote: (id: string, amount: number, method: 'M-Pesa') => void
   updateStatus: (id: string, status: ServiceRequestStatus) => void
   removeRequest: (id: string) => void
 }
@@ -89,6 +102,24 @@ export const useRequestsStore = create<RequestsStore>()(
             requests: {
               ...state.requests,
               [id]: { ...request, status, updatedAt: new Date().toISOString() },
+            },
+          }
+        }),
+      approveQuote: (id, amount, method) =>
+        set((state) => {
+          const request = state.requests[id]
+          if (!request) return state
+          if (request.status !== 'DIAGNOSING') return state
+          return {
+            requests: {
+              ...state.requests,
+              [id]: {
+                ...request,
+                quoteAmount: amount,
+                quoteApprovedAt: new Date().toISOString(),
+                quotePaymentMethod: method,
+                updatedAt: new Date().toISOString(),
+              },
             },
           }
         }),

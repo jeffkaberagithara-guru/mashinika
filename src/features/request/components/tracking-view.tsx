@@ -8,16 +8,24 @@ import {
   CheckCircle2,
   CircleX,
   Clock,
+  HandCoins,
+  Loader2,
+  MapPin,
   Radio,
+  ShieldCheck,
+  Smartphone,
   Star,
   UserRound,
 } from 'lucide-react'
 import { toast } from 'sonner'
 import { useRequestsStore } from '@/features/requests/store'
+import { useNotificationsStore } from '@/features/notifications/store'
 import {
   SIMULATION_STEP_MS,
   etaMinutesFor,
+  formatKsh,
   nextStatus,
+  quoteFor,
   statusSequence,
 } from '@/features/request/simulation'
 import {
@@ -40,11 +48,112 @@ function formatElapsed(startIso: string): string {
   return `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`
 }
 
+function QuoteApproval({
+  serviceType,
+  paying,
+  onApprove,
+}: {
+  serviceType: string
+  paying: boolean
+  onApprove: (method: 'M-Pesa') => void
+}) {
+  const quote = quoteFor(serviceType)
+  return (
+    <div className="border-border bg-card mt-3 rounded-lg border p-4 shadow-sm sm:p-5">
+      <div className="flex items-center gap-3">
+        <span className="bg-warning/10 text-warning flex size-10 shrink-0 items-center justify-center rounded-full">
+          <HandCoins className="size-5" aria-hidden="true" />
+        </span>
+        <div className="flex min-w-0 flex-1 flex-col">
+          <p className="text-foreground text-sm font-semibold">
+            Job diagnosed — here&apos;s your quote
+          </p>
+          <p className="text-muted-foreground text-xs">
+            Nothing is charged until you approve.
+          </p>
+        </div>
+      </div>
+
+      <dl className="text-muted-foreground mt-4 space-y-2 text-sm">
+        {quote.lines.map((line) => (
+          <div
+            key={line.label}
+            className="flex items-baseline justify-between gap-4"
+          >
+            <dt>{line.label}</dt>
+            <dd className="text-foreground font-medium whitespace-nowrap">
+              {formatKsh(line.amount)}
+            </dd>
+          </div>
+        ))}
+        <div className="border-border mt-3 flex items-baseline justify-between gap-4 border-t pt-3">
+          <dt className="text-foreground font-semibold">Total estimate</dt>
+          <dd className="text-foreground font-semibold">
+            {formatKsh(quote.amount)}
+          </dd>
+        </div>
+      </dl>
+
+      <div className="mt-4 flex flex-col gap-2 sm:flex-row">
+        <Button
+          type="button"
+          onClick={() => onApprove('M-Pesa')}
+          disabled={paying}
+          className="flex-1"
+        >
+          {paying ? (
+            <Loader2 className="size-4 animate-spin" aria-hidden="true" />
+          ) : (
+            <Smartphone className="size-4" aria-hidden="true" />
+          )}
+          {paying ? 'Sending STK push…' : 'Approve & pay with M-Pesa'}
+        </Button>
+        <Button
+          type="button"
+          variant="outline"
+          onClick={() => onApprove('M-Pesa')}
+          disabled={paying}
+          className="flex-1"
+        >
+          Approve — pay on arrival
+        </Button>
+      </div>
+      <p className="text-muted-foreground mt-3 text-xs">
+        <ShieldCheck
+          className="text-success -mt-0.5 mr-1 inline size-3.5"
+          aria-hidden="true"
+        />
+        This is a demo quote for illustration — no real payment is collected.
+      </p>
+    </div>
+  )
+}
+
 export function TrackingView({ requestId }: { requestId: string }) {
   const request = useRequestsStore((state) => state.requests[requestId])
   const updateStatus = useRequestsStore((state) => state.updateStatus)
+  const approveQuote = useRequestsStore((state) => state.approveQuote)
+  const lastStatusRef = React.useRef<string | null>(null)
   const [, setTick] = React.useState(0)
   const [cancelArmed, setCancelArmed] = React.useState(false)
+  const [paying, setPaying] = React.useState(false)
+
+  React.useEffect(() => {
+    if (!request) return
+    if (lastStatusRef.current !== request.status) {
+      lastStatusRef.current = request.status
+      const config = SERVICE_REQUEST_STATUS_CONFIG[request.status]
+      const service = getServiceBySlug(request.serviceType)
+      if (config) {
+        useNotificationsStore.getState().notify({
+          kind: 'rescue',
+          title: 'Rescue update',
+          body: `Your ${service?.name ?? 'request'} is now "${config.shortLabel}".`,
+          href: `/request/${request.id}`,
+        })
+      }
+    }
+  }, [request])
 
   React.useEffect(() => {
     const clock = window.setInterval(() => setTick((value) => value + 1), 1000)
@@ -53,6 +162,8 @@ export function TrackingView({ requestId }: { requestId: string }) {
 
   React.useEffect(() => {
     if (!request) return
+    // Dispatch pauses here for the customer to approve the diagnosed quote.
+    if (request.status === 'DIAGNOSING' && !request.quoteApprovedAt) return
     const next = nextStatus(request.status, request.serviceType)
     if (!next) return
 
@@ -106,6 +217,27 @@ export function TrackingView({ requestId }: { requestId: string }) {
     }
     updateStatus(request.id, 'CANCELLED')
     toast.success('Request cancelled.')
+  }
+
+  function handleApprove(method: 'M-Pesa') {
+    if (!request) return
+    const quote = quoteFor(request.serviceType)
+    setPaying(true)
+    window.setTimeout(() => {
+      approveQuote(request.id, quote.amount, method)
+      setPaying(false)
+      useNotificationsStore.getState().notify({
+        kind: 'quote',
+        title: 'Quote approved',
+        body: `Quote of ${formatKsh(quote.amount)} approved via M-Pesa (demo) — work is starting.`,
+        href: `/request/${request.id}`,
+      })
+      toast.success(
+        method === 'M-Pesa'
+          ? 'M-Pesa STK push sent (demo) — quote approved. Work starting.'
+          : 'Quote approved — work starting.',
+      )
+    }, 1400)
   }
 
   const timelineItems: TimelineItem[] = sequence.map((status, index) => {
@@ -182,6 +314,17 @@ export function TrackingView({ requestId }: { requestId: string }) {
             <p className="text-foreground mt-0.5 text-sm font-medium">
               {request.locationLabel}
             </p>
+            {request.coordinates ? (
+              <a
+                href={`https://www.google.com/maps?q=${request.coordinates.lat},${request.coordinates.lng}`}
+                target="_blank"
+                rel="noreferrer"
+                className="text-primary mt-1 inline-flex items-center gap-1 text-xs font-medium"
+              >
+                <MapPin className="size-3.5" aria-hidden="true" />
+                Open in maps
+              </a>
+            ) : null}
           </div>
           <div className="border-border bg-subtle rounded-lg border px-4 py-3">
             <p className="text-muted-foreground text-xs">
@@ -213,6 +356,29 @@ export function TrackingView({ requestId }: { requestId: string }) {
           </div>
         ) : null}
 
+        {request.photos?.length ? (
+          <div className="border-border bg-subtle mt-3 rounded-lg border px-4 py-3">
+            <p className="text-muted-foreground text-xs">
+              Photos ({request.photos.length})
+            </p>
+            <div className="mt-2 flex flex-wrap gap-2.5">
+              {request.photos.map((src, index) => (
+                <span
+                  key={src}
+                  className="border-border relative size-20 overflow-hidden rounded-lg border shadow-sm"
+                >
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={src}
+                    alt={`Vehicle photo ${index + 1} for the technician`}
+                    className="size-full object-cover"
+                  />
+                </span>
+              ))}
+            </div>
+          </div>
+        ) : null}
+
         {assignedTechnician ? (
           <div className="border-border bg-subtle mt-3 rounded-lg border px-4 py-3">
             <div className="flex items-center gap-3">
@@ -240,6 +406,36 @@ export function TrackingView({ requestId }: { requestId: string }) {
                 {assignedTechnician.rating.toFixed(1)}
               </span>
             </div>
+          </div>
+        ) : null}
+
+        {request.status === 'DIAGNOSING' && !request.quoteApprovedAt ? (
+          <QuoteApproval
+            serviceType={request.serviceType}
+            paying={paying}
+            onApprove={handleApprove}
+          />
+        ) : null}
+
+        {request.quoteApprovedAt && request.quoteAmount ? (
+          <div className="border-success/30 bg-success/5 mt-3 flex items-center gap-3 rounded-lg border px-4 py-3">
+            <span className="bg-success/15 text-success flex size-10 shrink-0 items-center justify-center rounded-full">
+              <HandCoins className="size-5" aria-hidden="true" />
+            </span>
+            <div className="flex min-w-0 flex-1 flex-col">
+              <p className="text-foreground text-sm font-semibold">
+                Quote approved — {formatKsh(request.quoteAmount)}
+              </p>
+              <p className="text-muted-foreground text-xs">
+                {request.quotePaymentMethod === 'M-Pesa'
+                  ? 'Charged via M-Pesa STK push (demo).'
+                  : 'Payment agreed — no charge has been taken.'}
+              </p>
+            </div>
+            <CheckCircle2
+              className="text-success size-5 shrink-0"
+              aria-hidden="true"
+            />
           </div>
         ) : null}
 

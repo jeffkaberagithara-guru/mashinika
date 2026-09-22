@@ -67,5 +67,66 @@ export function etaMinutesFor(serviceType: string): number {
   }
 }
 
+export type QuoteLine = {
+  label: string
+  amount: number
+}
+
+export type QuoteTemplate = {
+  amount: number
+  lines: QuoteLine[]
+  method: 'M-Pesa'
+}
+
+/** Demo quote the technician proposes once a job is diagnosed. */
+export function quoteFor(serviceType: string): QuoteTemplate {
+  switch (serviceType) {
+    case 'towing':
+      return {
+        amount: 8500,
+        lines: [
+          { label: 'Callout & registration', amount: 1000 },
+          { label: 'Hookup & tie-down', amount: 1500 },
+          { label: 'Transport (up to 15 km)', amount: 6000 },
+        ],
+        method: 'M-Pesa',
+      }
+    case 'diagnostics':
+      return {
+        amount: 3800,
+        lines: [
+          { label: 'Callout & registration', amount: 800 },
+          { label: 'Diagnosis & fault read', amount: 1800 },
+          { label: 'Parts allowance', amount: 1200 },
+        ],
+        method: 'M-Pesa',
+      }
+    case 'care':
+      return {
+        amount: 4700,
+        lines: [
+          { label: 'Callout & registration', amount: 800 },
+          { label: 'Service & labour', amount: 2400 },
+          { label: 'Consumables', amount: 1500 },
+        ],
+        method: 'M-Pesa',
+      }
+    default:
+      return {
+        amount: 2500,
+        lines: [
+          { label: 'Callout & registration', amount: 800 },
+          { label: 'On-site work', amount: 1200 },
+          { label: 'Parts allowance', amount: 500 },
+        ],
+        method: 'M-Pesa',
+      }
+  }
+}
+
+export function formatKsh(value: number): string {
+  return `KSh ${new Intl.NumberFormat('en-KE').format(value)}`
+}
+
 /** How long the demo spends on each non-terminal status, in milliseconds. */
 export const SIMULATION_STEP_MS = 5000

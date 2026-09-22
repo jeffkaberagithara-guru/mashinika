@@ -5,7 +5,10 @@ import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { useShallow } from 'zustand/react/shallow'
 import {
+  CalendarDays,
+  CarFront,
   CheckCircle2,
+  ChevronRight,
   History,
   LifeBuoy,
   PhoneCall,
@@ -13,13 +16,21 @@ import {
   Radar,
   Star,
   Trash2,
+  Truck,
   UserRound,
 } from 'lucide-react'
 import { toast } from 'sonner'
 import { useRequestsStore } from '@/features/requests/store'
+import { useNotificationsStore } from '@/features/notifications/store'
+import { useGarageStore } from '@/features/garage/store'
+import { useFleetStore } from '@/features/fleet/store'
+import { useCareStore } from '@/features/care/store'
+import { useInspectionsStore } from '@/features/inspect/store'
 import { SERVICE_REQUEST_STATUS_CONFIG } from '@/features/roadside/status'
 import { terminalStatuses, statusSequence } from '@/features/request/simulation'
 import { getServiceBySlug } from '@/config/services'
+import { PaymentsLedger } from '@/features/customer/payments-ledger'
+import { BookingsPanel } from '@/features/customer/bookings-panel'
 import { StatusBadge } from '@/components/ui/status-badge'
 import { Button } from '@/components/ui/button'
 import { EmptyState } from '@/components/ui/empty-state'
@@ -53,6 +64,19 @@ export function CustomerDashboard() {
   const removeRequest = useRequestsStore((state) => state.removeRequest)
   const updateStatus = useRequestsStore((state) => state.updateStatus)
 
+  const garageCount = useGarageStore(
+    useShallow((state) => Object.keys(state.vehicles).length),
+  )
+  const fleetCount = useFleetStore(
+    useShallow((state) => Object.keys(state.records).length),
+  )
+  const careBookings = useCareStore(
+    useShallow((state) => state.bookings.length),
+  )
+  const inspectionReports = useInspectionsStore(
+    useShallow((state) => state.reports.length),
+  )
+
   const [armedDelete, setArmedDelete] = React.useState<string | null>(null)
   const [armedCancel, setArmedCancel] = React.useState<string | null>(null)
 
@@ -72,6 +96,12 @@ export function CustomerDashboard() {
       issue: 'Battery dead after parking for an hour.',
     })
     toast.success('Demo rescue created — tracking live.')
+    useNotificationsStore.getState().notify({
+      kind: 'rescue',
+      title: 'Demo rescue created',
+      body: 'A roadside rescue has been started for the Toyota Axio — tracking is live.',
+      href: `/request/${request.id}`,
+    })
     router.push(`/request/${request.id}`)
   }
 
@@ -129,18 +159,18 @@ export function CustomerDashboard() {
           </div>
         </div>
 
-        <dl className="mt-8 grid grid-cols-1 gap-3 sm:grid-cols-3">
+        <dl className="mt-8 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
           <div className="border-border bg-card flex items-center gap-4 rounded-xl border p-5 shadow-sm">
             <span className="bg-primary/10 text-primary flex size-11 shrink-0 items-center justify-center rounded-lg">
               <Radar className="size-5 animate-pulse" aria-hidden="true" />
             </span>
             <div className="flex flex-col">
-              <dd className="text-foreground text-2xl font-semibold tracking-tight">
-                {active.length}
-              </dd>
               <dt className="text-muted-foreground text-sm">
                 Active rescue{active.length === 1 ? '' : 's'}
               </dt>
+              <dd className="text-foreground text-2xl font-semibold tracking-tight">
+                {active.length}
+              </dd>
             </div>
           </div>
           <div className="border-border bg-card flex items-center gap-4 rounded-xl border p-5 shadow-sm">
@@ -148,24 +178,91 @@ export function CustomerDashboard() {
               <CheckCircle2 className="size-5" aria-hidden="true" />
             </span>
             <div className="flex flex-col">
+              <dt className="text-muted-foreground text-sm">Completed</dt>
               <dd className="text-foreground text-2xl font-semibold tracking-tight">
                 {completed.length}
               </dd>
-              <dt className="text-muted-foreground text-sm">Completed</dt>
             </div>
           </div>
           <div className="border-border bg-card flex items-center gap-4 rounded-xl border p-5 shadow-sm">
-            <span className="bg-subtle text-foreground ring-border flex size-11 shrink-0 items-center justify-center rounded-lg ring-1 ring-inset">
-              <History className="size-5" aria-hidden="true" />
+            <span className="bg-primary/10 text-primary flex size-11 shrink-0 items-center justify-center rounded-lg">
+              <CalendarDays className="size-5" aria-hidden="true" />
             </span>
             <div className="flex flex-col">
+              <dt className="text-muted-foreground text-sm">
+                Care booking{careBookings === 1 ? '' : 's'}
+              </dt>
               <dd className="text-foreground text-2xl font-semibold tracking-tight">
-                {requests.length}
+                {careBookings}
               </dd>
-              <dt className="text-muted-foreground text-sm">Total requests</dt>
+            </div>
+          </div>
+          <div className="border-border bg-card flex items-center gap-4 rounded-xl border p-5 shadow-sm">
+            <span className="bg-success/10 text-success flex size-11 shrink-0 items-center justify-center rounded-lg">
+              <Truck className="size-5" aria-hidden="true" />
+            </span>
+            <div className="flex flex-col">
+              <dt className="text-muted-foreground text-sm">
+                Fleet &amp; inspections
+              </dt>
+              <dd className="text-foreground text-2xl font-semibold tracking-tight">
+                {fleetCount + inspectionReports}
+              </dd>
             </div>
           </div>
         </dl>
+
+        <div className="mt-3 grid grid-cols-1 gap-3 sm:grid-cols-2">
+          <Link
+            href="/customer/garage"
+            className="border-border bg-card hover:bg-muted/50 flex items-center justify-between gap-3 rounded-xl border p-4 shadow-sm transition-colors"
+          >
+            <span className="flex min-w-0 items-center gap-3">
+              <span className="bg-subtle text-foreground ring-border flex size-10 shrink-0 items-center justify-center rounded-lg ring-1 ring-inset">
+                <CarFront className="size-5" aria-hidden="true" />
+              </span>
+              <span className="flex min-w-0 flex-col">
+                <span className="text-foreground truncate text-sm font-semibold">
+                  My garage
+                </span>
+                <span className="text-muted-foreground truncate text-xs">
+                  {garageCount > 0
+                    ? `${garageCount} saved vehicle${garageCount === 1 ? '' : 's'} — open their service passports`
+                    : 'Save vehicles and their service passports'}
+                </span>
+              </span>
+            </span>
+            <ChevronRight
+              className="text-muted-foreground size-4 shrink-0"
+              aria-hidden="true"
+            />
+          </Link>
+
+          <Link
+            href="/fleet"
+            className="border-border bg-card hover:bg-muted/50 flex items-center justify-between gap-3 rounded-xl border p-4 shadow-sm transition-colors"
+          >
+            <span className="flex min-w-0 items-center gap-3">
+              <span className="bg-subtle text-foreground ring-border flex size-10 shrink-0 items-center justify-center rounded-lg ring-1 ring-inset">
+                <Truck className="size-5" aria-hidden="true" />
+              </span>
+              <span className="flex min-w-0 flex-col">
+                <span className="text-foreground truncate text-sm font-semibold">
+                  My fleet
+                </span>
+                <span className="text-muted-foreground truncate text-xs">
+                  {fleetCount > 0
+                    ? `${fleetCount} vehicle${fleetCount === 1 ? '' : 's'} under management`
+                    : 'Manage your business vehicles'}
+                </span>
+              </span>
+            </span>
+            <ChevronRight
+              className="text-muted-foreground size-4 shrink-0"
+              aria-hidden="true"
+            />
+          </Link>
+        </div>
 
         {spotlight ? (
           <DashSpotlight
@@ -286,6 +383,20 @@ export function CustomerDashboard() {
             </Button>
           </div>
         ) : null}
+
+        <div className="mt-10 flex flex-col gap-4">
+          <p className="text-muted-foreground text-xs font-medium tracking-wide uppercase">
+            Bookings &amp; inspections
+          </p>
+          <BookingsPanel />
+        </div>
+
+        <div className="mt-10 flex flex-col gap-4">
+          <p className="text-muted-foreground text-xs font-medium tracking-wide uppercase">
+            Payments
+          </p>
+          <PaymentsLedger />
+        </div>
       </section>
     </div>
   )
