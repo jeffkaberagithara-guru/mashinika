@@ -5,6 +5,7 @@ import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { Bell, CheckCheck, LifeBuoy, Wallet, Info } from 'lucide-react'
 import { useNotificationsStore } from '@/features/notifications/store'
+import { sessionHome, useSessionStore } from '@/features/authentication/store'
 import { Button } from '@/components/ui/button'
 import { cn } from 'cn'
 
@@ -36,12 +37,14 @@ function timeAgo(iso: string): string {
 
 export function NotificationsBell() {
   const router = useRouter()
+  const user = useSessionStore((state) => state.user)
   const items = useNotificationsStore((state) => state.items)
   const markRead = useNotificationsStore((state) => state.markRead)
   const markAllRead = useNotificationsStore((state) => state.markAllRead)
   const [open, setOpen] = React.useState(false)
 
   const unread = items.filter((item) => !item.read).length
+  const home = user ? sessionHome(user.role) : '/login'
 
   function handleOpenItem(item: (typeof items)[number]) {
     markRead(item.id)
@@ -145,9 +148,9 @@ export function NotificationsBell() {
             variant="ghost"
             size="sm"
             className="w-full justify-start"
-            render={<Link href="/customer" />}
+            render={<Link href={home} />}
           >
-            View my rescues and payments
+            {user ? 'Open my dashboard' : 'Sign in to see your dashboard'}
           </Button>
         </div>
       </div>

@@ -2,7 +2,9 @@
 
 import * as React from 'react'
 import Link from 'next/link'
-import { Car, ChevronRight, Menu, PhoneCall } from 'lucide-react'
+import { useRouter } from 'next/navigation'
+import { Car, ChevronRight, LogOut, Menu, PhoneCall } from 'lucide-react'
+import { toast } from 'sonner'
 import { Button } from '@/components/ui/button'
 import {
   Sheet,
@@ -15,10 +17,15 @@ import {
 import { siteConfig } from '@/config/site'
 import { ThemeToggle } from '@/components/marketing/theme-toggle'
 import { NotificationsBell } from '@/components/marketing/notifications-bell'
+import { UserMenu } from '@/components/marketing/user-menu'
+import { useSessionStore, sessionHome } from '@/features/authentication/store'
 import { cn } from 'cn'
 
 export function SiteHeader() {
   const [open, setOpen] = React.useState(false)
+  const user = useSessionStore((state) => state.user)
+  const signOut = useSessionStore((state) => state.signOut)
+  const router = useRouter()
 
   return (
     <header className="bg-background/80 border-border z-sticky sticky top-0 border-b backdrop-blur-sm">
@@ -58,14 +65,7 @@ export function SiteHeader() {
           <NotificationsBell />
           <ThemeToggle />
 
-          <Button
-            variant="ghost"
-            size="sm"
-            className="hidden min-[480px]:inline-flex"
-            render={<Link href={siteConfig.login.href} />}
-          >
-            {siteConfig.login.label}
-          </Button>
+          <UserMenu />
 
           <Button
             size="sm"
@@ -119,12 +119,16 @@ export function SiteHeader() {
                   </Link>
                 ))}
                 <Link
-                  href="/customer"
+                  href={user ? sessionHome(user.role) : '/login'}
                   onClick={() => setOpen(false)}
                   className="hover:bg-muted flex items-center justify-between gap-3 rounded-lg px-3 py-3 transition-colors"
                 >
                   <span className="text-foreground text-sm font-medium">
-                    My rescues
+                    {user?.role === 'customer'
+                      ? 'My dashboard'
+                      : user
+                        ? 'My area'
+                        : 'Sign in'}
                   </span>
                   <ChevronRight
                     className="text-muted-foreground size-4 shrink-0"
@@ -144,6 +148,26 @@ export function SiteHeader() {
                     aria-hidden="true"
                   />
                 </Link>
+                {user ? (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setOpen(false)
+                      signOut()
+                      toast.success('Signed out — see you soon!')
+                      router.push('/')
+                    }}
+                    className="hover:bg-muted flex items-center justify-between gap-3 rounded-lg px-3 py-3 text-left transition-colors"
+                  >
+                    <span className="text-foreground text-sm font-medium">
+                      Sign out
+                    </span>
+                    <LogOut
+                      className="text-muted-foreground size-4 shrink-0"
+                      aria-hidden="true"
+                    />
+                  </button>
+                ) : null}
               </nav>
 
               <div className="mt-auto flex flex-col gap-2 border-t px-2 pt-4 pb-2">

@@ -9,9 +9,15 @@ import {
   Home,
   LayoutGrid,
   LifeBuoy,
+  UserRound,
 } from 'lucide-react'
 import { cn } from 'cn'
 import type { LucideIcon } from 'lucide-react'
+import {
+  sessionHome,
+  useSessionStore,
+  type SessionRole,
+} from '@/features/authentication/store'
 
 type NavItem = {
   label: string
@@ -31,13 +37,23 @@ const emergency: NavItem = {
   icon: LifeBuoy,
 }
 
-const trailing: NavItem[] = [
-  { label: 'Rescues', href: '/customer', icon: CarFront },
-  { label: 'Academy', href: '/academy', icon: GraduationCap },
-]
+const roleTrail: Record<SessionRole, NavItem> = {
+  customer: { label: 'My rescues', href: '/customer', icon: CarFront },
+  technician: {
+    label: 'Console',
+    href: '/technician/console',
+    icon: UserRound,
+  },
+  dispatcher: { label: 'Admin', href: '/admin', icon: UserRound },
+  fleet: { label: 'Fleet', href: '/fleet', icon: CarFront },
+  student: { label: 'Academy', href: '/academy', icon: GraduationCap },
+}
 
 export function MobileNav() {
   const pathname = usePathname()
+  const user = useSessionStore((state) => state.user)
+  const trail = user ? roleTrail[user.role] : roleTrail.customer
+  const academy = { label: 'Academy', href: '/academy', icon: GraduationCap }
 
   function isActive(href: string, exact = false) {
     if (exact) return pathname === href
@@ -74,16 +90,29 @@ export function MobileNav() {
           </span>
         </Link>
 
-        {trailing.map((item) => (
-          <MobileLink
-            key={item.href}
-            href={item.href}
-            label={item.label}
-            active={isActive(item.href)}
-          >
-            <item.icon className="size-5" aria-hidden="true" />
-          </MobileLink>
-        ))}
+        <MobileLink
+          href={user ? sessionHome(user.role) : '/login'}
+          label={user ? trail.label : 'Accounts'}
+          active={isActive(trail.href)}
+        >
+          {user ? (
+            <trail.icon className="size-5" aria-hidden="true" />
+          ) : (
+            <UserRound className="size-5" aria-hidden="true" />
+          )}
+        </MobileLink>
+
+        <MobileLink
+          href={academy.href}
+          label={user?.role === 'student' ? 'Courses' : academy.label}
+          active={isActive(academy.href)}
+        >
+          {user?.role === 'student' ? (
+            <LayoutGrid className="size-5" aria-hidden="true" />
+          ) : (
+            <academy.icon className="size-5" aria-hidden="true" />
+          )}
+        </MobileLink>
       </div>
     </nav>
   )
